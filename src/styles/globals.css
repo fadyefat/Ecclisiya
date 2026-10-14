@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-base: #101116;
+    --bg-card: #17191F;
+    --bg-elevated: #20232B;
+    --bg-hover: #262934;
+    --border-subtle: #30333E;
+    
+    --primary: #695CFF;
+    --primary-hover: #7A70FF;
+    --primary-subtle: rgba(105, 92, 255, 0.14);
+
+    --coral: #E85D75;
+    --coral-subtle: rgba(232, 93, 117, 0.14);
+
+    --amber: #DDAA48;
+    --amber-subtle: rgba(221, 170, 72, 0.14);
+
+    --mint: #27CFA5;
+    --mint-subtle: rgba(39, 207, 165, 0.14);
+
+    --text-primary: #F1F2F7;
+    --text-secondary: #A5A8B5;
+    --text-muted: #6C7080;
+  }
+
+  * {
+    border-color: var(--border-subtle);
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Noto Sans Arabic', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color-scheme: dark;
+    direction: rtl;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    overflow-x: hidden;
+  }
+
+  /* Custom dark scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #101116;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #30333E;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #454958;
+  }
+}
+
+/* Utilities for visual system */
+.bg-base { background-color: #101116; }
+.bg-card { background-color: #17191F; }
+.bg-elevated { background-color: #20232B; }
+.bg-hover { background-color: #262934; }
+.border-subtle { border-color: #30333E; }
+
+.text-primary { color: #F1F2F7; }
+.text-secondary { color: #A5A8B5; }
+.text-muted { color: #6C7080; }
+
+.text-brand-purple { color: #695CFF; }
+.bg-brand-purple { background-color: #695CFF; }
+.bg-brand-purple-subtle { background-color: rgba(105, 92, 255, 0.14); }
+.border-brand-purple { border-color: #695CFF; }
+
+.text-brand-coral { color: #E85D75; }
+.bg-brand-coral { background-color: #E85D75; }
+.bg-brand-coral-subtle { background-color: rgba(232, 93, 117, 0.14); }
+.border-brand-coral { border-color: #E85D75; }
+
+.text-brand-amber { color: #DDAA48; }
+.bg-brand-amber { background-color: #DDAA48; }
+.bg-brand-amber-subtle { background-color: rgba(221, 170, 72, 0.14); }
+.border-brand-amber { border-color: #DDAA48; }
+
+.text-brand-mint { color: #27CFA5; }
+.bg-brand-mint { background-color: #27CFA5; }
+.bg-brand-mint-subtle { background-color: rgba(39, 207, 165, 0.14); }
+.border-brand-mint { border-color: #27CFA5; }
+
+/* Focus styles for keyboard accessibility */
+:focus-visible {
+  outline: 2px solid #695CFF;
+  outline-offset: 2px;
+}

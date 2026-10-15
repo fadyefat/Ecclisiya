@@ -1,29 +1,75 @@
 @import "tailwindcss";
 
 @layer base {
-  :root {
+  :root,
+  html.dark,
+  [data-theme="dark"] {
+    /* Dark Theme */
     --bg-base: #101116;
     --bg-card: #17191F;
     --bg-elevated: #20232B;
     --bg-hover: #262934;
     --border-subtle: #30333E;
+    --border-hover: #454958;
     
     --primary: #695CFF;
     --primary-hover: #7A70FF;
     --primary-subtle: rgba(105, 92, 255, 0.14);
+    --primary-border: rgba(105, 92, 255, 0.30);
 
     --coral: #E85D75;
+    --coral-hover: #F28296;
     --coral-subtle: rgba(232, 93, 117, 0.14);
 
     --amber: #DDAA48;
+    --amber-hover: #E6BC64;
     --amber-subtle: rgba(221, 170, 72, 0.14);
 
     --mint: #27CFA5;
+    --mint-hover: #3DE0B6;
     --mint-subtle: rgba(39, 207, 165, 0.14);
 
     --text-primary: #F1F2F7;
     --text-secondary: #A5A8B5;
     --text-muted: #6C7080;
+
+    color-scheme: dark;
+  }
+
+  html.light,
+  [data-theme="light"] {
+    /* Light Theme (Client Church Design Palette) */
+    --bg-base: #FFF8F6;          /* Warm soft cream/rose page bg */
+    --bg-card: #FFFFFF;          /* Pure crisp white card bg */
+    --bg-elevated: #FAF2F0;      /* Warm subtle surface */
+    --bg-hover: #F0E7E4;         /* Hover state surface */
+    --border-subtle: #EEE7E4;    /* Warm subtle border */
+    --border-hover: #D8CCC7;     /* Hover border */
+
+    --primary: #7A182B;          /* Church Burgundy (العنابي الكنسي) */
+    --primary-hover: #5B0018;    /* Deep liturgical burgundy */
+    --primary-subtle: rgba(122, 24, 43, 0.08);
+    --primary-border: rgba(122, 24, 43, 0.20);
+
+    --coral: #C33636;            /* Red / Absence (غائب) */
+    --coral-hover: #A92A2A;
+    --coral-subtle: #FDF0ED;
+
+    --amber: #FCC260;            /* Warm Amber / Gold (ذهبي الكنيسة) */
+    --amber-hover: #F4BA5D;
+    --amber-dark: #D89650;
+    --amber-text: #B87A28;
+    --amber-subtle: #FEF7EB;
+
+    --mint: #36825C;             /* Liturgical Green / Present (حاضر) */
+    --mint-hover: #2B694A;
+    --mint-subtle: #EAF7EE;
+
+    --text-primary: #2C181D;     /* Deep warm dark brown/black */
+    --text-secondary: #78686B;   /* Warm slate gray */
+    --text-muted: #A8989C;       /* Soft muted gray */
+
+    color-scheme: light;
   }
 
   * {
@@ -33,7 +79,6 @@
 
   html {
     font-family: 'Noto Sans Arabic', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    color-scheme: dark;
     direction: rtl;
     background-color: var(--bg-base);
     color: var(--text-primary);
@@ -53,50 +98,157 @@
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #101116;
+    background: var(--bg-base);
   }
   ::-webkit-scrollbar-thumb {
-    background: #30333E;
+    background: var(--border-subtle);
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #454958;
+    background: var(--border-hover);
   }
 }
 
-/* Utilities for visual system */
-.bg-base { background-color: #101116; }
-.bg-card { background-color: #17191F; }
-.bg-elevated { background-color: #20232B; }
-.bg-hover { background-color: #262934; }
-.border-subtle { border-color: #30333E; }
+/* Utilities using CSS variables for theme reactivity */
+.bg-base { background-color: var(--bg-base); }
+.bg-card { background-color: var(--bg-card); }
+.bg-elevated { background-color: var(--bg-elevated); }
+.bg-hover { background-color: var(--bg-hover); }
+.border-subtle { border-color: var(--border-subtle); }
+.border-hover { border-color: var(--border-hover); }
 
-.text-primary { color: #F1F2F7; }
-.text-secondary { color: #A5A8B5; }
-.text-muted { color: #6C7080; }
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
 
-.text-brand-purple { color: #695CFF; }
-.bg-brand-purple { background-color: #695CFF; }
-.bg-brand-purple-subtle { background-color: rgba(105, 92, 255, 0.14); }
-.border-brand-purple { border-color: #695CFF; }
+.text-brand-purple, .text-brand-primary { color: var(--primary); }
+.bg-brand-purple, .bg-brand-primary { background-color: var(--primary); }
+.bg-brand-purple-subtle, .bg-brand-primary-subtle { background-color: var(--primary-subtle); }
+.border-brand-purple, .border-brand-primary { border-color: var(--primary); }
 
-.text-brand-coral { color: #E85D75; }
-.bg-brand-coral { background-color: #E85D75; }
-.bg-brand-coral-subtle { background-color: rgba(232, 93, 117, 0.14); }
-.border-brand-coral { border-color: #E85D75; }
+.text-brand-coral { color: var(--coral); }
+.bg-brand-coral { background-color: var(--coral); }
+.bg-brand-coral-subtle { background-color: var(--coral-subtle); }
+.border-brand-coral { border-color: var(--coral); }
 
-.text-brand-amber { color: #DDAA48; }
-.bg-brand-amber { background-color: #DDAA48; }
-.bg-brand-amber-subtle { background-color: rgba(221, 170, 72, 0.14); }
-.border-brand-amber { border-color: #DDAA48; }
+.text-brand-amber { color: var(--amber); }
+.bg-brand-amber { background-color: var(--amber); }
+.bg-brand-amber-subtle { background-color: var(--amber-subtle); }
+.border-brand-amber { border-color: var(--amber); }
 
-.text-brand-mint { color: #27CFA5; }
-.bg-brand-mint { background-color: #27CFA5; }
-.bg-brand-mint-subtle { background-color: rgba(39, 207, 165, 0.14); }
-.border-brand-mint { border-color: #27CFA5; }
+.text-brand-mint { color: var(--mint); }
+.bg-brand-mint { background-color: var(--mint); }
+.bg-brand-mint-subtle { background-color: var(--mint-subtle); }
+.border-brand-mint { border-color: var(--mint); }
 
 /* Focus styles for keyboard accessibility */
 :focus-visible {
-  outline: 2px solid #695CFF;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
+}
+
+/* ==============================================================
+   LIGHT MODE OVERRIDES FOR EXISTING CODEBASE CLASSES
+   Ensures 100% adherence to Client Design Palette in Light Mode
+   ============================================================== */
+html.light {
+  /* Background overrides */
+  .bg-\[\#101116\] { background-color: #FFF8F6 !important; }
+  .bg-\[\#17191F\] { background-color: #FFFFFF !important; }
+  .bg-\[\#17191F\]\/90 { background-color: rgba(255, 255, 255, 0.92) !important; }
+  .bg-\[\#17191F\]\/60 { background-color: rgba(255, 255, 255, 0.60) !important; }
+  .bg-\[\#17191F\]\/50 { background-color: rgba(255, 255, 255, 0.50) !important; }
+  .bg-\[\#20232B\] { background-color: #FAF2F0 !important; }
+  .bg-\[\#20232B\]\/60 { background-color: rgba(250, 242, 240, 0.65) !important; }
+  .bg-\[\#20232B\]\/50 { background-color: rgba(250, 242, 240, 0.50) !important; }
+  .bg-\[\#20232B\]\/40 { background-color: rgba(250, 242, 240, 0.40) !important; }
+  .bg-\[\#20232B\]\/30 { background-color: rgba(250, 242, 240, 0.30) !important; }
+  .bg-\[\#262A34\], .bg-\[\#262934\] { background-color: #F0E7E4 !important; }
+
+  /* Border overrides */
+  .border-\[\#30333E\] { border-color: #EEE7E4 !important; }
+  .border-\[\#30333E\]\/60 { border-color: rgba(238, 231, 228, 0.70) !important; }
+  .border-\[\#30333E\]\/50 { border-color: rgba(238, 231, 228, 0.55) !important; }
+  .border-\[\#30333E\]\/40 { border-color: rgba(238, 231, 228, 0.40) !important; }
+  .border-\[\#454958\] { border-color: #D8CCC7 !important; }
+  .divide-\[\#30333E\]\/50 > :not([hidden]) ~ :not([hidden]) { border-color: #EEE7E4 !important; }
+
+  /* Text overrides */
+  .text-\[\#F1F2F7\] { color: #2C181D !important; }
+  .text-\[\#A5A8B5\] { color: #78686B !important; }
+  .text-\[\#6C7080\] { color: #A8989C !important; }
+  .placeholder\:text-\[\#6C7080\]::placeholder { color: #A8989C !important; }
+  .text-white, button.bg-\[\#695CFF\], button.bg-\[\#E85D75\] { color: #FFFFFF !important; }
+
+  /* Primary Brand: Purple in dark -> Church Burgundy in light */
+  .bg-\[\#695CFF\] { background-color: #7A182B !important; }
+  .text-\[\#695CFF\] { color: #7A182B !important; }
+  .border-\[\#695CFF\] { border-color: #7A182B !important; }
+  .text-\[\#9D94FF\], .text-\[\#7A70FF\] { color: #7A182B !important; }
+  .bg-\[\#7A70FF\] { background-color: #5B0018 !important; }
+  .bg-\[\#695CFF\]\/10, .bg-\[\#695CFF\]\/15, .bg-\[\#695CFF\]\/20 {
+    background-color: rgba(122, 24, 43, 0.08) !important;
+  }
+  .border-\[\#695CFF\]\/20, .border-\[\#695CFF\]\/25, .border-\[\#695CFF\]\/30, .border-\[\#695CFF\]\/60 {
+    border-color: rgba(122, 24, 43, 0.20) !important;
+  }
+  .shadow-\[\#695CFF\]\/20, .shadow-\[\#695CFF\]\/25, .shadow-\[\#695CFF\]\/30 {
+    --tw-shadow-color: rgba(122, 24, 43, 0.20) !important;
+  }
+  .from-\[\#695CFF\] { --tw-gradient-from: #7A182B !important; --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), #7A182B, var(--tw-gradient-to, rgba(122, 24, 43, 0))) !important; }
+  .to-\[\#7A70FF\] { --tw-gradient-to: #5B0018 !important; }
+
+  /* Mint / Green (حاضر / Attendance Success) */
+  .bg-\[\#27CFA5\] { background-color: #36825C !important; }
+  .text-\[\#27CFA5\] { color: #36825C !important; }
+  .border-\[\#27CFA5\] { border-color: #36825C !important; }
+  .bg-\[\#27CFA5\]\/10, .bg-\[\#27CFA5\]\/15, .bg-\[\#27CFA5\]\/20 {
+    background-color: #EAF7EE !important;
+  }
+  .border-\[\#27CFA5\]\/20, .border-\[\#27CFA5\]\/30, .border-\[\#27CFA5\]\/40 {
+    border-color: rgba(54, 130, 92, 0.30) !important;
+  }
+
+  /* Amber / Gold (ذهبي الكنيسة) */
+  .bg-\[\#DDAA48\], .bg-\[\#E6BC64\] { background-color: #FCC260 !important; }
+  .text-\[\#DDAA48\], .text-\[\#E6BC64\] { color: #B87A28 !important; }
+  .border-\[\#DDAA48\] { border-color: #FCC260 !important; }
+  .bg-\[\#DDAA48\]\/5, .bg-\[\#DDAA48\]\/10, .bg-\[\#DDAA48\]\/15, .bg-\[\#DDAA48\]\/20 {
+    background-color: #FEF7EB !important;
+  }
+  .border-\[\#DDAA48\]\/20, .border-\[\#DDAA48\]\/30, .border-\[\#DDAA48\]\/40 {
+    border-color: rgba(252, 194, 96, 0.40) !important;
+  }
+
+  /* Coral / Red (غائب / تنبيه) */
+  .bg-\[\#E85D75\], .bg-\[\#F28296\] { background-color: #C33636 !important; }
+  .text-\[\#E85D75\], .text-\[\#F28296\] { color: #C33636 !important; }
+  .border-\[\#E85D75\] { border-color: #C33636 !important; }
+  .bg-\[\#E85D75\]\/5, .bg-\[\#E85D75\]\/10, .bg-\[\#E85D75\]\/15, .bg-\[\#E85D75\]\/20 {
+    background-color: #FDF0ED !important;
+  }
+  .border-\[\#E85D75\]\/20, .border-\[\#E85D75\]\/30 {
+    border-color: rgba(195, 54, 54, 0.30) !important;
+  }
+
+  /* Hover States */
+  .hover\:bg-\[\#20232B\]:hover { background-color: #FAF2F0 !important; }
+  .hover\:bg-\[\#262A34\]:hover { background-color: #F0E7E4 !important; }
+  .hover\:bg-\[\#17191F\]:hover { background-color: #FFFFFF !important; }
+  .hover\:bg-\[\#17191F\]\/50:hover { background-color: rgba(250, 242, 240, 0.70) !important; }
+  .hover\:text-\[\#F1F2F7\]:hover { color: #2C181D !important; }
+  .hover\:border-\[\#454958\]:hover { border-color: #D8CCC7 !important; }
+  .hover\:border-\[\#695CFF\]\/60:hover { border-color: rgba(122, 24, 43, 0.50) !important; }
+
+  /* Group hover states */
+  .group:hover .group-hover\:bg-\[\#695CFF\] { background-color: #7A182B !important; }
+  .group:hover .group-hover\:bg-\[\#DDAA48\] { background-color: #FCC260 !important; }
+  .group:hover .group-hover\:bg-\[\#27CFA5\] { background-color: #36825C !important; }
+  .group:hover .group-hover\:bg-\[\#E85D75\] { background-color: #C33636 !important; }
+
+  /* Focus rings */
+  .focus-visible\:border-\[\#695CFF\]:focus-visible { border-color: #7A182B !important; }
+  .focus-visible\:ring-\[\#695CFF\]:focus-visible { --tw-ring-color: #7A182B !important; }
+  .focus\:border-\[\#695CFF\]:focus { border-color: #7A182B !important; }
+  .focus\:ring-\[\#695CFF\]:focus { --tw-ring-color: #7A182B !important; }
 }

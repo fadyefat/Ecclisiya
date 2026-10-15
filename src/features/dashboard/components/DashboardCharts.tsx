@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { AttendanceTrendItemDto } from '../../../types/api';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/card';
+import { useTheme } from '../../../lib/theme-context';
 
 interface DashboardChartsProps {
   data: AttendanceTrendItemDto[];
@@ -51,6 +52,15 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export const DashboardCharts: React.FC<DashboardChartsProps> = ({ data, isLoading }) => {
+  const { resolvedTheme } = useTheme();
+  const isLight = resolvedTheme === 'light';
+
+  // Exact client design colors in Light Mode, crisp high-contrast in Dark Mode
+  const gridStroke = isLight ? '#EEE7E4' : '#30333E';
+  const axisStroke = isLight ? '#78686B' : '#6C7080';
+  const attendeesColor = isLight ? '#36825C' : '#27CFA5';
+  const absenteesColor = isLight ? '#C33636' : '#E85D75';
+
   if (isLoading) {
     return (
       <Card>
@@ -92,11 +102,17 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({ data, isLoadin
         </div>
         <div className="flex items-center gap-3 text-xs">
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-sm bg-[#27CFA5]" />
+            <span
+              className="h-2.5 w-2.5 rounded-sm"
+              style={{ backgroundColor: attendeesColor }}
+            />
             <span className="text-[#A5A8B5]">حاضر</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-sm bg-[#E85D75]" />
+            <span
+              className="h-2.5 w-2.5 rounded-sm"
+              style={{ backgroundColor: absenteesColor }}
+            />
             <span className="text-[#A5A8B5]">غائب</span>
           </div>
         </div>
@@ -109,19 +125,19 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({ data, isLoadin
               margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
               barGap={4}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#30333E" opacity={0.5} vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} opacity={0.7} vertical={false} />
               <XAxis
                 dataKey="date"
-                stroke="#6C7080"
+                stroke={axisStroke}
                 fontSize={11}
                 tickLine={false}
-                axisLine={{ stroke: '#30333E' }}
+                axisLine={{ stroke: gridStroke }}
               />
               <YAxis
-                stroke="#6C7080"
+                stroke={axisStroke}
                 fontSize={11}
                 tickLine={false}
-                axisLine={{ stroke: '#30333E' }}
+                axisLine={{ stroke: gridStroke }}
                 allowDecimals={false}
               />
               <Tooltip content={<CustomTooltip />} />
@@ -136,14 +152,14 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({ data, isLoadin
               <Bar
                 dataKey="attendees"
                 name="attendees"
-                fill="#27CFA5"
+                fill={attendeesColor}
                 radius={[6, 6, 0, 0]}
                 maxBarSize={45}
               />
               <Bar
                 dataKey="absentees"
                 name="absentees"
-                fill="#E85D75"
+                fill={absenteesColor}
                 radius={[6, 6, 0, 0]}
                 maxBarSize={45}
               />

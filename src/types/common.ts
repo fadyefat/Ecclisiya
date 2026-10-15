@@ -88,6 +88,7 @@ export interface AppSetting {
   maleGroupWhatsAppUrl: string;
   femaleGroupWhatsAppUrl: string;
   facebookPageUrl: string;
+  themeMode?: 'light' | 'dark' | 'system';
 }
 
 export interface AuditLog {

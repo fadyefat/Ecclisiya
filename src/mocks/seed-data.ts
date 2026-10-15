@@ -448,6 +448,7 @@ export const INITIAL_SETTINGS: AppSetting = {
   maleGroupWhatsAppUrl: 'https://chat.whatsapp.com/sampleMaleGroupCode123',
   femaleGroupWhatsAppUrl: 'https://chat.whatsapp.com/sampleFemaleGroupCode456',
   facebookPageUrl: 'https://facebook.com/ecclesia.church.official',
+  themeMode: 'light',
 };
 
 export const INITIAL_AUDIT_LOGS: AuditLog[] = [

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Menu, Bell, Plus, Search, Sparkles } from 'lucide-react';
+import { Menu, Bell, Plus, Search, Sparkles, Sun, Moon } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTheme } from '../../lib/theme-context';
 
 interface AppHeaderProps {
   onOpenMobileMenu: () => void;
@@ -10,6 +11,7 @@ interface AppHeaderProps {
 export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileMenu }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   const getPageTitle = (pathname: string) => {
     if (pathname.startsWith('/dashboard')) return 'لوحة التحكم';
@@ -17,7 +19,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileMenu }) => {
     if (pathname.startsWith('/attendance-days')) return 'جلسات الحضور';
     if (pathname.startsWith('/events')) return 'إدارة الفعاليات';
     if (pathname.startsWith('/reports')) return 'تقارير الحضور والغياب';
-    if (pathname.startsWith('/settings')) return 'إعدادات الكنيسة والتواصل';
+    if (pathname.startsWith('/settings')) return 'إعدادات الكنيسة والتطبيق';
     return 'لوحة التحكم';
   };
 
@@ -55,12 +57,27 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileMenu }) => {
         </div>
       </div>
 
-      {/* Left side: Quick actions & Notifications */}
+      {/* Left side: Quick actions, Theme Toggle, & Notifications */}
       <div className="flex items-center gap-2 sm:gap-3">
         <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#20232B] border border-[#30333E] text-xs text-[#A5A8B5]">
           <Sparkles className="h-3.5 w-3.5 text-[#DDAA48]" />
           <span>نسخة النظام 1.0 (Demo)</span>
         </div>
+
+        {/* Quick Theme Toggle Button (Sun / Moon) */}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-[#30333E] bg-[#20232B] text-[#A5A8B5] hover:text-[#F1F2F7] hover:bg-[#262A34] transition-colors"
+          title={resolvedTheme === 'dark' ? 'التبديل إلى الوضع الفاتح (هوية الكنيسة)' : 'التبديل إلى الوضع الداكن'}
+          aria-label="تبديل مظهر النظام"
+        >
+          {resolvedTheme === 'dark' ? (
+            <Sun className="h-4 w-4 text-[#FCC260] transition-transform hover:rotate-45" />
+          ) : (
+            <Moon className="h-4 w-4 text-[#7A182B]" />
+          )}
+        </button>
 
         {/* Notifications Icon */}
         <button

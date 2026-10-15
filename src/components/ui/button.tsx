@@ -8,7 +8,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-[#695CFF] text-[#F1F2F7] shadow-sm hover:bg-[#7A70FF] active:scale-[0.98]',
+          'bg-[#695CFF] text-white shadow-sm hover:bg-[#7A70FF] active:scale-[0.98]',
         secondary:
           'bg-[#20232B] text-[#F1F2F7] border border-[#30333E] hover:bg-[#262A34] hover:border-[#454958]',
         outline:
@@ -16,9 +16,9 @@ export const buttonVariants = cva(
         ghost:
           'text-[#A5A8B5] hover:text-[#F1F2F7] hover:bg-[#20232B]',
         destructive:
-          'bg-[#E85D75] text-[#F1F2F7] hover:bg-[#E85D75]/90 active:scale-[0.98]',
+          'bg-[#E85D75] text-white hover:bg-[#E85D75]/90 active:scale-[0.98]',
         success:
-          'bg-[#27CFA5] text-[#101116] font-semibold hover:bg-[#27CFA5]/90 active:scale-[0.98]',
+          'bg-[#27CFA5] text-white font-semibold hover:bg-[#27CFA5]/90 active:scale-[0.98]',
         amber:
           'bg-[#DDAA48] text-[#101116] font-semibold hover:bg-[#DDAA48]/90 active:scale-[0.98]',
       },

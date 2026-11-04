@@ -1,14 +1,9 @@
-/**
- * Formats a percentage value nicely (e.g. 84.5%)
- */
+
 export function formatPercentage(val: number | null | undefined): string {
   if (val === null || val === undefined || isNaN(val)) return '0%';
   return `${Math.round(val * 10) / 10}%`;
 }
 
-/**
- * Formats an Egyptian phone number cleanly (e.g., "0101 234 5678")
- */
 export function formatPhoneNumber(phone: string): string {
   if (!phone) return '—';
   const clean = phone.replace(/\D/g, '');
@@ -18,9 +13,6 @@ export function formatPhoneNumber(phone: string): string {
   return phone;
 }
 
-/**
- * Exports data array as CSV file with UTF-8 BOM for Arabic compatibility in Excel
- */
 export function exportToCsv(filename: string, headers: string[], rows: (string | number | null | undefined)[][]) {
   const BOM = '\uFEFF';
   const csvContent = [

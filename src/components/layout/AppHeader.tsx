@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Bell, Plus, Search, Sparkles, Sun, Moon } from 'lucide-react';
+import { Menu, Bell, Plus, Search, Smartphone, Sun, Moon } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../../lib/theme-context';
@@ -15,8 +15,9 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileMenu }) => {
 
   const getPageTitle = (pathname: string) => {
     if (pathname.startsWith('/dashboard')) return 'لوحة التحكم';
-    if (pathname.startsWith('/members')) return 'إدارة الأعضاء';
+    if (pathname.startsWith('/members')) return 'إدارة الأعضاء والطلاب';
     if (pathname.startsWith('/attendance-days')) return 'جلسات الحضور';
+    if (pathname.startsWith('/mobile-app')) return 'بوابة تطبيق الموبايل';
     if (pathname.startsWith('/events')) return 'إدارة الفعاليات';
     if (pathname.startsWith('/reports')) return 'تقارير الحضور والغياب';
     if (pathname.startsWith('/settings')) return 'إعدادات الكنيسة والتطبيق';
@@ -25,7 +26,6 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileMenu }) => {
 
   return (
     <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between border-b border-[#30333E] bg-[#17191F]/90 backdrop-blur-md px-4 sm:px-6">
-      {/* Right side: Mobile Menu Button & Current Page Title */}
       <div className="flex items-center gap-3">
         <button
           type="button"
@@ -43,7 +43,6 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileMenu }) => {
         </div>
       </div>
 
-      {/* Center: Search Bar (Desktop) */}
       <div className="hidden md:flex items-center w-72 lg:w-80">
         <div className="relative w-full">
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-[#A5A8B5]">
@@ -57,14 +56,16 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileMenu }) => {
         </div>
       </div>
 
-      {/* Left side: Quick actions, Theme Toggle, & Notifications */}
       <div className="flex items-center gap-2 sm:gap-3">
-        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#20232B] border border-[#30333E] text-xs text-[#A5A8B5]">
-          <Sparkles className="h-3.5 w-3.5 text-[#DDAA48]" />
-          <span>نسخة النظام 1.0 (Demo)</span>
-        </div>
+        <button
+          type="button"
+          onClick={() => navigate('/mobile-app')}
+          className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-[#20232B] border border-[#30333E] text-xs text-[#A5A8B5] hover:text-[#F1F2F7] cursor-pointer"
+        >
+          <Smartphone className="h-3.5 w-3.5 text-[#27CFA5]" />
+          <span>تطبيق الموبايل متصل</span>
+        </button>
 
-        {/* Quick Theme Toggle Button (Sun / Moon) */}
         <button
           type="button"
           onClick={toggleTheme}
@@ -79,12 +80,11 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileMenu }) => {
           )}
         </button>
 
-        {/* Notifications Icon */}
         <button
           type="button"
           className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-[#30333E] bg-[#20232B] text-[#A5A8B5] hover:text-[#F1F2F7] hover:bg-[#262A34] transition-colors"
-          title="الإشعارات"
-          onClick={() => navigate('/members')}
+          title="طلبات المساعدة والإشعارات"
+          onClick={() => navigate('/mobile-app')}
         >
           <Bell className="h-4 w-4" />
           <span className="absolute top-2 left-2 flex h-2 w-2">
@@ -93,7 +93,6 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileMenu }) => {
           </span>
         </button>
 
-        {/* Primary Action Button */}
         <Button
           size="sm"
           onClick={() => navigate('/attendance-days')}

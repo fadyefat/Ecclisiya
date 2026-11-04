@@ -16,9 +16,12 @@ export enum UserRole {
 
 export type AttendanceDayStatus = 'Scheduled' | 'Open' | 'Closed' | 'Finalized';
 
+export type MeetingType = 'youth' | 'bible' | 'prayer' | 'mass' | 'other';
+
 export enum AttendanceMethod {
   QrCode = 1,
   Manual = 2,
+  Excused = 3,
 }
 
 export type EventStatus = 'Published' | 'Draft' | 'Cancelled';
@@ -31,10 +34,14 @@ export interface User {
   age?: number;
   levelId?: string;
   levelName?: string;
+  university?: string;
+  studyYear?: string;
   confessionFather?: string;
   address?: string;
   status: UserStatus;
   role: UserRole;
+  points?: number;
+  acceptNotifications?: boolean;
   createdAtUtc: string;
   approvedAtUtc?: string | null;
   isDeleted?: boolean;
@@ -43,13 +50,16 @@ export interface User {
 export interface AttendanceDay {
   id: string;
   title: string;
-  date: string; // ISO date string YYYY-MM-DD
-  startAt: string; // ISO datetime
-  endAt: string; // ISO datetime
+  date: string;
+  startAt: string;
+  endAt: string;
   status: AttendanceDayStatus;
   isOpen: boolean;
   location: string;
   notes?: string;
+  meetingType?: MeetingType;
+  sessionCode?: string;
+  pointsReward?: number;
   totalEligibleUsers: number;
   totalAttendees: number;
   totalAbsentees: number;
@@ -65,6 +75,8 @@ export interface Attendance {
   attendanceDayId: string;
   markedAtUtc: string;
   method: AttendanceMethod;
+  isExcused?: boolean;
+  pointsAwarded?: number;
   notes?: string;
 }
 
@@ -88,13 +100,38 @@ export interface AppSetting {
   maleGroupWhatsAppUrl: string;
   femaleGroupWhatsAppUrl: string;
   facebookPageUrl: string;
+  verseOfTheDay?: string;
   themeMode?: 'light' | 'dark' | 'system';
+}
+
+export interface MobileNotification {
+  id: string;
+  userId?: string | null;
+  userName?: string;
+  title: string;
+  body: string;
+  type: 'general' | 'attendance' | 'event' | 'approval' | 'reminder';
+  isRead: boolean;
+  createdAtUtc: string;
+}
+
+export interface HelpRequest {
+  id: string;
+  userId?: string | null;
+  userName: string;
+  phoneNumber: string;
+  attendanceDayId?: string | null;
+  attendanceDayTitle?: string;
+  message: string;
+  status: 'Pending' | 'Resolved' | 'Dismissed';
+  createdAtUtc: string;
+  resolvedAtUtc?: string | null;
 }
 
 export interface AuditLog {
   id: string;
   action: string;
-  targetType: 'User' | 'AttendanceDay' | 'Attendance' | 'Event' | 'Settings';
+  targetType: 'User' | 'AttendanceDay' | 'Attendance' | 'Event' | 'Settings' | 'Notification' | 'HelpRequest';
   targetId?: string;
   details: string;
   performedBy: string;
@@ -111,7 +148,7 @@ export interface PagedResponse<T> {
 
 export interface DateRangeFilterValue {
   key: 'today' | '7days' | '30days' | 'thisMonth' | 'custom' | 'all';
-  from?: string; // YYYY-MM-DD
-  to?: string;   // YYYY-MM-DD
+  from?: string;
+  to?: string;
   label: string;
 }

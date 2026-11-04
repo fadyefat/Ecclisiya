@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Sparkles, 
-  Plus, 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  Link as LinkIcon, 
-  Trash2, 
-  LayoutGrid, 
+import {
+  Sparkles,
+  Plus,
+  Calendar,
+  Clock,
+  MapPin,
+  Link as LinkIcon,
+  Trash2,
+  LayoutGrid,
   List
 } from 'lucide-react';
 import { PageHeader } from '../../../components/shared/PageHeader';
@@ -112,7 +112,6 @@ export const EventsPage: React.FC = () => {
         }
       />
 
-      {/* Loading state */}
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 3 }).map((_, i) => (
@@ -129,7 +128,7 @@ export const EventsPage: React.FC = () => {
           </Button>
         </div>
       ) : viewMode === 'grid' ? (
-        /* Grid Cards View */
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {events.map((evt) => {
             const timing = getTimingStatus(evt.startAt, evt.endAt);
@@ -238,7 +237,7 @@ export const EventsPage: React.FC = () => {
           })}
         </div>
       ) : (
-        /* Table View */
+
         <div className="overflow-x-auto rounded-2xl border border-[#30333E] bg-[#17191F]">
           <table className="w-full text-right text-xs">
             <thead className="bg-[#20232B] text-[#A5A8B5] border-b border-[#30333E] font-semibold">
@@ -304,14 +303,12 @@ export const EventsPage: React.FC = () => {
         </div>
       )}
 
-      {/* Create Event Dialog */}
       <CreateEventDialog
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
         onSuccess={() => refetch()}
       />
 
-      {/* Confirm Delete Event Dialog */}
       <ConfirmDialog
         open={!!selectedEventToDelete}
         onOpenChange={(open) => !open && setSelectedEventToDelete(null)}

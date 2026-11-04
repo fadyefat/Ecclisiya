@@ -5,16 +5,18 @@ import { UserStatusBadge } from '../../../components/shared/StatusBadge';
 import { User, UserStatus, Gender } from '../../../types/common';
 import { formatArabicDateTime } from '../../../lib/date-utils';
 import { formatPhoneNumber } from '../../../lib/formatters';
-import { 
-  Phone, 
-  MapPin, 
-  Calendar, 
-  ShieldCheck, 
-  CheckCircle, 
-  PauseCircle, 
+import {
+  Phone,
+  MapPin,
+  Calendar,
+  ShieldCheck,
+  CheckCircle,
+  PauseCircle,
   PlayCircle,
   MessageCircle,
-  Edit
+  Edit,
+  Award,
+  GraduationCap,
 } from 'lucide-react';
 
 interface MemberDetailsModalProps {
@@ -61,11 +63,14 @@ export const MemberDetailsModal: React.FC<MemberDetailsModalProps> = ({
                 </div>
               </div>
             </div>
+            <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-[#DDAA48]/15 border border-[#DDAA48]/30 text-[#DDAA48] text-xs font-bold">
+              <Award className="h-3.5 w-3.5" />
+              <span>{user.points ?? 0} نقطة</span>
+            </div>
           </div>
         </DialogHeader>
 
         <div className="space-y-4 my-4 text-xs">
-          {/* Contact Details Card */}
           <div className="p-4 rounded-xl bg-[#20232B]/80 border border-[#30333E] space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-[#A5A8B5]">
@@ -86,16 +91,20 @@ export const MemberDetailsModal: React.FC<MemberDetailsModalProps> = ({
             </div>
 
             <div className="flex items-center gap-2 text-[#A5A8B5]">
+              <GraduationCap className="h-4 w-4 text-[#9D94FF]" />
+              <span>الجامعة: {user.university || 'غير محددة'} ({user.studyYear || user.levelName || 'عام'})</span>
+            </div>
+
+            <div className="flex items-center gap-2 text-[#A5A8B5]">
               <MapPin className="h-4 w-4 text-[#DDAA48]" />
               <span>العنوان: {user.address || 'غير محدد'}</span>
             </div>
           </div>
 
-          {/* Spiritual & Service Data */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="p-3 rounded-xl bg-[#20232B]/50 border border-[#30333E] space-y-1">
-              <span className="text-[#A5A8B5] text-[11px]">المرحلة الكنسية:</span>
-              <p className="font-semibold text-[#F1F2F7]">{user.levelName || 'عام'}</p>
+              <span className="text-[#A5A8B5] text-[11px]">المرحلة / الفرقة:</span>
+              <p className="font-semibold text-[#F1F2F7]">{user.studyYear || user.levelName || 'عام'}</p>
             </div>
 
             <div className="p-3 rounded-xl bg-[#20232B]/50 border border-[#30333E] space-y-1">
@@ -104,7 +113,6 @@ export const MemberDetailsModal: React.FC<MemberDetailsModalProps> = ({
             </div>
           </div>
 
-          {/* System Timeline */}
           <div className="p-3 rounded-xl bg-[#101116] border border-[#30333E] space-y-1.5 text-[#A5A8B5] text-[11px]">
             <div className="flex items-center justify-between">
               <span className="flex items-center gap-1.5">

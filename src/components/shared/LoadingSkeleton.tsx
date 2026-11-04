@@ -18,13 +18,13 @@ export const TableSkeleton: React.FC<{ rows?: number; cols?: number }> = ({
 }) => {
   return (
     <div className="w-full space-y-3">
-      {/* Header skeleton */}
+
       <div className="flex gap-4 p-4 rounded-xl bg-[#17191F] border border-[#30333E]">
         {Array.from({ length: cols }).map((_, i) => (
           <Skeleton key={i} className="h-4 flex-1" />
         ))}
       </div>
-      {/* Rows skeleton */}
+
       {Array.from({ length: rows }).map((_, r) => (
         <div key={r} className="flex gap-4 p-4 rounded-xl bg-[#17191F]/60 border border-[#30333E]/50">
           {Array.from({ length: cols }).map((_, c) => (

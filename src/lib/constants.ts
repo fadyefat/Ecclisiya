@@ -1,5 +1,5 @@
 export const APP_NAME = 'Ecclesia';
-export const APP_SUBTITLE = 'إدارة الحضور الكنسي';
+export const APP_SUBTITLE = 'اجتماع الملاك غبريال الجامعي';
 
 export const STORAGE_KEYS = {
   USERS: 'ecclisiya_users_v1',
@@ -8,6 +8,8 @@ export const STORAGE_KEYS = {
   EVENTS: 'ecclisiya_events_v1',
   SETTINGS: 'ecclisiya_settings_v1',
   AUDIT_LOGS: 'ecclisiya_audit_logs_v1',
+  HELP_REQUESTS: 'ecclisiya_help_requests_v1',
+  NOTIFICATIONS: 'ecclisiya_notifications_v1',
 };
 
 export const EGYPT_PHONE_REGEX = /^01[0125]\d{8}$/;
@@ -18,6 +20,24 @@ export const CHURCH_LEVELS = [
   { id: 'lvl-univ', name: 'المرحلة الجامعية' },
   { id: 'lvl-grad', name: 'الخريجون والشباب' },
   { id: 'lvl-general', name: 'الاجتماع العام' },
+];
+
+export const STUDY_YEARS = [
+  'الفرقة الأولى',
+  'الفرقة الثانية',
+  'الفرقة الثالثة',
+  'الفرقة الرابعة',
+  'الفرقة الخامسة',
+  'الفرقة السادسة',
+  'خريج',
+];
+
+export const MEETING_TYPES = [
+  { key: 'youth', label: 'اجتماع شباب وجامعيين' },
+  { key: 'bible', label: 'درس كتاب' },
+  { key: 'prayer', label: 'صلاة وتسبيح' },
+  { key: 'mass', label: 'قداس إلهي' },
+  { key: 'other', label: 'لقاء روحي عام' },
 ];
 
 export const GENDER_OPTIONS = [
@@ -41,4 +61,5 @@ export const ATTENDANCE_DAY_STATUS_OPTIONS = [
 export const ATTENDANCE_METHODS = [
   { value: 1, key: 'QrCode', label: 'رمز QR', icon: 'QrCode' },
   { value: 2, key: 'Manual', label: 'يدوي', icon: 'UserCheck' },
+  { value: 3, key: 'Excused', label: 'غياب بعذر', icon: 'CalendarOff' },
 ];

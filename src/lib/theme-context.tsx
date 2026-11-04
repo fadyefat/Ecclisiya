@@ -41,7 +41,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode; defaultTheme?:
     return themeMode;
   });
 
-  // Keep resolvedTheme up to date when themeMode or system preference changes
   useEffect(() => {
     const applyTheme = (isDark: boolean) => {
       const root = document.documentElement;

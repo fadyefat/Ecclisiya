@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { 
-  Calendar, 
-  Download, 
-  Filter, 
-  RotateCcw, 
-  CheckCircle2, 
-  XCircle, 
-  Percent, 
+import {
+  Calendar,
+  Download,
+  Filter,
+  RotateCcw,
+  CheckCircle2,
+  XCircle,
+  Percent,
   AlertTriangle
 } from 'lucide-react';
 import { PageHeader } from '../../../components/shared/PageHeader';
@@ -106,7 +106,6 @@ export const ReportsPage: React.FC = () => {
         }
       />
 
-      {/* Filter Bar */}
       <div className="p-4 rounded-2xl bg-[#17191F] border border-[#30333E] space-y-3">
         <div className="flex items-center gap-2 text-xs font-semibold text-[#A5A8B5] mb-1">
           <Filter className="h-3.5 w-3.5" />
@@ -114,7 +113,7 @@ export const ReportsPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          {/* From Date */}
+
           <div>
             <label className="block text-[11px] text-[#A5A8B5] mb-1">من تاريخ:</label>
             <Input
@@ -125,7 +124,6 @@ export const ReportsPage: React.FC = () => {
             />
           </div>
 
-          {/* To Date */}
           <div>
             <label className="block text-[11px] text-[#A5A8B5] mb-1">إلى تاريخ:</label>
             <Input
@@ -136,7 +134,6 @@ export const ReportsPage: React.FC = () => {
             />
           </div>
 
-          {/* Session Search */}
           <div>
             <label className="block text-[11px] text-[#A5A8B5] mb-1">اسم الجلسة:</label>
             <Input
@@ -147,7 +144,6 @@ export const ReportsPage: React.FC = () => {
             />
           </div>
 
-          {/* Level Filter */}
           <div>
             <label className="block text-[11px] text-[#A5A8B5] mb-1">المرحلة الكنسية:</label>
             <Select
@@ -162,7 +158,6 @@ export const ReportsPage: React.FC = () => {
             </Select>
           </div>
 
-          {/* Status Filter */}
           <div>
             <label className="block text-[11px] text-[#A5A8B5] mb-1">حالة الجلسة:</label>
             <Select
@@ -193,7 +188,6 @@ export const ReportsPage: React.FC = () => {
         )}
       </div>
 
-      {/* KPI Summary Row */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5">
         <StatCard
           title="الجلسات المعتمدة"
@@ -232,7 +226,6 @@ export const ReportsPage: React.FC = () => {
         />
       </div>
 
-      {/* Report Tabs: Sessions Breakdown vs Members Attendance Analysis */}
       <Tabs value={activeTab} onValueChange={(val: any) => setActiveTab(val)}>
         <TabsList className="mb-4">
           <TabsTrigger value="sessions" badge={report?.sessions.length}>
@@ -243,7 +236,6 @@ export const ReportsPage: React.FC = () => {
           </TabsTrigger>
         </TabsList>
 
-        {/* Tab 1: Sessions Details */}
         <TabsContent value="sessions">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-3">
@@ -307,7 +299,6 @@ export const ReportsPage: React.FC = () => {
           </Card>
         </TabsContent>
 
-        {/* Tab 2: Members Pastoral Analysis */}
         <TabsContent value="members">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-3">

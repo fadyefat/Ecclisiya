@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { 
-  CalendarPlus, 
-  Search, 
-  Eye, 
-  Play, 
-  Square, 
-  CheckCheck, 
-  Trash2, 
+import {
+  CalendarPlus,
+  Search,
+  Eye,
+  Play,
+  Square,
+  CheckCheck,
+  Trash2,
   QrCode,
   MapPin,
   Clock
@@ -29,13 +29,11 @@ import { toast } from 'sonner';
 export const AttendanceDaysPage: React.FC = () => {
   const navigate = useNavigate();
 
-  // Filters & Pagination
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<AttendanceDayStatus | 'all'>('all');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  // Dialogs
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [confirmCloseDay, setConfirmCloseDay] = useState<AttendanceDay | null>(null);
   const [confirmFinalizeDay, setConfirmFinalizeDay] = useState<AttendanceDay | null>(null);
@@ -168,7 +166,7 @@ export const AttendanceDaysPage: React.FC = () => {
       className: 'text-left',
       cell: (day) => (
         <div className="flex items-center justify-end gap-1">
-          {/* View / QR details */}
+
           <Button
             size="iconSm"
             variant="outline"
@@ -179,7 +177,6 @@ export const AttendanceDaysPage: React.FC = () => {
             <QrCode className="h-3.5 w-3.5" />
           </Button>
 
-          {/* Open session toggle */}
           {!day.isOpen && day.status !== 'Finalized' && (
             <Button
               size="iconSm"
@@ -192,7 +189,6 @@ export const AttendanceDaysPage: React.FC = () => {
             </Button>
           )}
 
-          {/* Close session toggle */}
           {day.isOpen && (
             <Button
               size="iconSm"
@@ -205,7 +201,6 @@ export const AttendanceDaysPage: React.FC = () => {
             </Button>
           )}
 
-          {/* Finalize session */}
           {day.status === 'Closed' && (
             <Button
               size="iconSm"
@@ -254,7 +249,6 @@ export const AttendanceDaysPage: React.FC = () => {
         }
       />
 
-      {/* Filter and Search Bar */}
       <div className="p-4 rounded-2xl bg-[#17191F] border border-[#30333E] flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="w-full sm:w-80">
           <Input
@@ -285,7 +279,6 @@ export const AttendanceDaysPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Sessions DataTable */}
       <DataTable
         columns={columns}
         data={data?.items || []}
@@ -304,14 +297,12 @@ export const AttendanceDaysPage: React.FC = () => {
         keyExtractor={(item) => item.id}
       />
 
-      {/* Create Dialog */}
       <CreateAttendanceDayDialog
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
         onSuccess={() => refetch()}
       />
 
-      {/* Confirm Close Session Dialog */}
       <ConfirmDialog
         open={!!confirmCloseDay}
         onOpenChange={(open) => !open && setConfirmCloseDay(null)}
@@ -323,7 +314,6 @@ export const AttendanceDaysPage: React.FC = () => {
         onConfirm={handleCloseSession}
       />
 
-      {/* Confirm Finalize Session Dialog */}
       <ConfirmDialog
         open={!!confirmFinalizeDay}
         onOpenChange={(open) => !open && setConfirmFinalizeDay(null)}
@@ -335,7 +325,6 @@ export const AttendanceDaysPage: React.FC = () => {
         onConfirm={handleFinalizeSession}
       />
 
-      {/* Confirm Delete Session Dialog */}
       <ConfirmDialog
         open={!!confirmDeleteDay}
         onOpenChange={(open) => !open && setConfirmDeleteDay(null)}

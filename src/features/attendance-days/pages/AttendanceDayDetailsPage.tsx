@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { 
-  ArrowRight, 
-  Users, 
-  CheckCircle2, 
-  XCircle, 
-  Percent, 
-  Search, 
-  Download, 
-  UserCheck, 
-  MapPin, 
-  Clock, 
+import {
+  ArrowRight,
+  Users,
+  CheckCircle2,
+  XCircle,
+  Percent,
+  Search,
+  Download,
+  UserCheck,
+  MapPin,
+  Clock,
   Calendar,
   CheckCheck,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  Award,
 } from 'lucide-react';
 import { attendanceDaysService } from '../services/attendanceDaysService';
 import { attendanceService } from '../services/attendanceService';
@@ -43,12 +44,10 @@ export const AttendanceDayDetailsPage: React.FC = () => {
   const [attendeePage, setAttendeePage] = useState(1);
   const [absenteePage, setAbsenteePage] = useState(1);
 
-  // Modals
   const [manualModalOpen, setManualModalOpen] = useState(false);
   const [finalizeConfirmOpen, setFinalizeConfirmOpen] = useState(false);
   const [userToRemoveAttendance, setUserToRemoveAttendance] = useState<AttendanceUserItemDto | null>(null);
 
-  // Queries
   const { data: day, isLoading: isDayLoading, refetch: refetchDay } = useQuery({
     queryKey: ['attendance-day', id],
     queryFn: () => (id ? attendanceDaysService.getAttendanceDayById(id) : null),
@@ -102,9 +101,9 @@ export const AttendanceDayDetailsPage: React.FC = () => {
     const rows = attendees.map(a => [
       a.name,
       a.phoneNumber,
-      a.levelName || 'عام',
+      a.studyYear || a.levelName || 'عام',
       formatArabicDateTime(a.markedAtUtc),
-      a.method === 1 ? 'رمز QR' : 'يدوي',
+      a.method === 1 ? 'رمز QR' : a.method === 3 ? 'غياب بعذر' : 'يدوي',
     ]);
     exportToCsv(`حاضرو_${day.title}_${day.date}`, headers, rows);
     toast.success('تم تصدير قائمة الحاضرين بصيغة CSV بنجاح');
@@ -116,7 +115,7 @@ export const AttendanceDayDetailsPage: React.FC = () => {
     const rows = absentees.map(a => [
       a.name,
       a.phoneNumber,
-      a.levelName || 'عام',
+      a.studyYear || a.levelName || 'عام',
     ]);
     exportToCsv(`غائبون_${day.title}_${day.date}`, headers, rows);
     toast.success('تم تصدير قائمة الغائبين بصيغة CSV بنجاح');
@@ -141,14 +140,13 @@ export const AttendanceDayDetailsPage: React.FC = () => {
     );
   }
 
-  // Attendees table columns
   const attendeeColumns: Column<AttendanceUserItemDto>[] = [
     {
       header: 'اسم العضو',
       cell: (item) => (
         <div className="flex flex-col">
           <span className="font-semibold text-[#F1F2F7]">{item.name}</span>
-          <span className="text-[11px] text-[#A5A8B5]">{item.levelName || 'عام'}</span>
+          <span className="text-[11px] text-[#A5A8B5]">{item.studyYear || item.levelName || 'عام'}</span>
         </div>
       ),
     },
@@ -189,14 +187,13 @@ export const AttendanceDayDetailsPage: React.FC = () => {
     },
   ];
 
-  // Absentees table columns
   const absenteeColumns: Column<AttendanceUserItemDto>[] = [
     {
       header: 'اسم العضو',
       cell: (item) => (
         <div className="flex flex-col">
           <span className="font-semibold text-[#F1F2F7]">{item.name}</span>
-          <span className="text-[11px] text-[#A5A8B5]">{item.levelName || 'عام'}</span>
+          <span className="text-[11px] text-[#A5A8B5]">{item.studyYear || item.levelName || 'عام'}</span>
         </div>
       ),
     },
@@ -212,7 +209,7 @@ export const AttendanceDayDetailsPage: React.FC = () => {
       header: 'المرحلة',
       cell: (item) => (
         <span className="text-xs text-[#F1F2F7] bg-[#20232B] px-2 py-0.5 rounded-lg border border-[#30333E]">
-          {item.levelName || 'عام'}
+          {item.studyYear || item.levelName || 'عام'}
         </span>
       ),
     },
@@ -237,7 +234,6 @@ export const AttendanceDayDetailsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Top Navigation & Session Header */}
       <div className="space-y-3 pb-4 border-b border-[#30333E]/60">
         <button
           onClick={() => navigate('/attendance-days')}
@@ -249,9 +245,14 @@ export const AttendanceDayDetailsPage: React.FC = () => {
 
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5 flex-wrap">
               <h1 className="text-xl sm:text-2xl font-bold text-[#F1F2F7]">{day.title}</h1>
               <AttendanceDayStatusBadge status={day.status} isOpen={day.isOpen} />
+              {day.sessionCode && (
+                <span className="text-xs font-mono px-2 py-0.5 rounded-lg bg-[#20232B] border border-[#30333E] text-[#9D94FF]">
+                  {day.sessionCode}
+                </span>
+              )}
             </div>
             <div className="flex flex-wrap items-center gap-4 text-xs text-[#A5A8B5] mt-2">
               <span className="flex items-center gap-1">
@@ -265,6 +266,10 @@ export const AttendanceDayDetailsPage: React.FC = () => {
               <span className="flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5 text-[#DDAA48]" />
                 {day.location}
+              </span>
+              <span className="flex items-center gap-1 text-[#27CFA5]">
+                <Award className="h-3.5 w-3.5" />
+                +{day.pointsReward ?? 10} نقطة للحضور
               </span>
             </div>
           </div>
@@ -286,13 +291,12 @@ export const AttendanceDayDetailsPage: React.FC = () => {
               className="gap-1.5 text-xs text-[#27CFA5] border-[#27CFA5]/40 hover:bg-[#27CFA5]/10"
             >
               <UserCheck className="h-4 w-4" />
-              <span>تسجيل يدوي</span>
+              <span>تسجيل يدوي / عذر</span>
             </Button>
           </div>
         </div>
       </div>
 
-      {/* 4 Metric KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="الأعضاء المؤهلون"
@@ -324,14 +328,11 @@ export const AttendanceDayDetailsPage: React.FC = () => {
         />
       </div>
 
-      {/* Main Grid: QR Code Panel on side + Attendees/Absentees Tabs */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* QR Code Panel (5 cols on large screens) */}
         <div className="lg:col-span-5">
           <QrCodePanel day={day} onRefresh={handleRefreshAll} />
         </div>
 
-        {/* Attendance Records & Absentees (7 cols on large screens) */}
         <div className="lg:col-span-7 space-y-4">
           <Tabs value={activeTab} onValueChange={(val: any) => setActiveTab(val)}>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#30333E] pb-3">
@@ -372,7 +373,6 @@ export const AttendanceDayDetailsPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Attendees Tab Content */}
             <TabsContent value="attendees" className="space-y-4">
               <div className="w-full sm:w-72">
                 <Input
@@ -401,7 +401,6 @@ export const AttendanceDayDetailsPage: React.FC = () => {
               />
             </TabsContent>
 
-            {/* Absentees Tab Content */}
             <TabsContent value="absentees" className="space-y-4">
               {day.status !== 'Finalized' && (
                 <div className="flex items-center gap-2 p-3 rounded-xl bg-[#DDAA48]/10 border border-[#DDAA48]/25 text-xs text-[#E6BC64]">
@@ -442,7 +441,6 @@ export const AttendanceDayDetailsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Manual Attendance Modal */}
       <ManualAttendanceModal
         dayId={day.id}
         dayTitle={day.title}
@@ -451,7 +449,6 @@ export const AttendanceDayDetailsPage: React.FC = () => {
         onSuccess={handleRefreshAll}
       />
 
-      {/* Confirm Finalize Session Dialog */}
       <ConfirmDialog
         open={finalizeConfirmOpen}
         onOpenChange={setFinalizeConfirmOpen}
@@ -463,7 +460,6 @@ export const AttendanceDayDetailsPage: React.FC = () => {
         onConfirm={handleFinalizeSession}
       />
 
-      {/* Confirm Remove Attendance Dialog */}
       <ConfirmDialog
         open={!!userToRemoveAttendance}
         onOpenChange={(open) => !open && setUserToRemoveAttendance(null)}

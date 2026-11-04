@@ -1,19 +1,23 @@
-import { 
-  User, 
-  AttendanceDay, 
-  Attendance, 
-  SpecialEvent, 
-  AppSetting, 
-  AuditLog, 
-  UserStatus 
+import {
+  User,
+  AttendanceDay,
+  Attendance,
+  SpecialEvent,
+  AppSetting,
+  AuditLog,
+  UserStatus,
+  HelpRequest,
+  MobileNotification,
 } from '../types/common';
-import { 
-  INITIAL_USERS, 
-  INITIAL_ATTENDANCE_DAYS, 
-  INITIAL_ATTENDANCES, 
-  INITIAL_EVENTS, 
-  INITIAL_SETTINGS, 
-  INITIAL_AUDIT_LOGS 
+import {
+  INITIAL_USERS,
+  INITIAL_ATTENDANCE_DAYS,
+  INITIAL_ATTENDANCES,
+  INITIAL_EVENTS,
+  INITIAL_SETTINGS,
+  INITIAL_AUDIT_LOGS,
+  INITIAL_HELP_REQUESTS,
+  INITIAL_NOTIFICATIONS,
 } from './seed-data';
 import { STORAGE_KEYS } from '../lib/constants';
 
@@ -44,7 +48,6 @@ function safeSetItem<T>(key: string, val: T): void {
 }
 
 export const mockStorage = {
-  // Users
   getUsers(): User[] {
     return safeGetItem<User[]>(STORAGE_KEYS.USERS, INITIAL_USERS);
   },
@@ -52,7 +55,6 @@ export const mockStorage = {
     safeSetItem(STORAGE_KEYS.USERS, users);
   },
 
-  // Attendance Days
   getAttendanceDays(): AttendanceDay[] {
     return safeGetItem<AttendanceDay[]>(STORAGE_KEYS.ATTENDANCE_DAYS, INITIAL_ATTENDANCE_DAYS);
   },
@@ -60,7 +62,6 @@ export const mockStorage = {
     safeSetItem(STORAGE_KEYS.ATTENDANCE_DAYS, days);
   },
 
-  // Attendances
   getAttendances(): Attendance[] {
     return safeGetItem<Attendance[]>(STORAGE_KEYS.ATTENDANCES, INITIAL_ATTENDANCES);
   },
@@ -68,7 +69,6 @@ export const mockStorage = {
     safeSetItem(STORAGE_KEYS.ATTENDANCES, attendances);
   },
 
-  // Events
   getEvents(): SpecialEvent[] {
     return safeGetItem<SpecialEvent[]>(STORAGE_KEYS.EVENTS, INITIAL_EVENTS);
   },
@@ -76,7 +76,6 @@ export const mockStorage = {
     safeSetItem(STORAGE_KEYS.EVENTS, events);
   },
 
-  // Settings
   getSettings(): AppSetting {
     return safeGetItem<AppSetting>(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS);
   },
@@ -84,7 +83,20 @@ export const mockStorage = {
     safeSetItem(STORAGE_KEYS.SETTINGS, settings);
   },
 
-  // Audit Logs
+  getHelpRequests(): HelpRequest[] {
+    return safeGetItem<HelpRequest[]>(STORAGE_KEYS.HELP_REQUESTS, INITIAL_HELP_REQUESTS);
+  },
+  saveHelpRequests(list: HelpRequest[]): void {
+    safeSetItem(STORAGE_KEYS.HELP_REQUESTS, list);
+  },
+
+  getNotifications(): MobileNotification[] {
+    return safeGetItem<MobileNotification[]>(STORAGE_KEYS.NOTIFICATIONS, INITIAL_NOTIFICATIONS);
+  },
+  saveNotifications(list: MobileNotification[]): void {
+    safeSetItem(STORAGE_KEYS.NOTIFICATIONS, list);
+  },
+
   getAuditLogs(): AuditLog[] {
     return safeGetItem<AuditLog[]>(STORAGE_KEYS.AUDIT_LOGS, INITIAL_AUDIT_LOGS);
   },
@@ -96,10 +108,9 @@ export const mockStorage = {
       timestamp: new Date().toISOString(),
     };
     logs.unshift(newLog);
-    safeSetItem(STORAGE_KEYS.AUDIT_LOGS, logs.slice(0, 50)); // keep last 50
+    safeSetItem(STORAGE_KEYS.AUDIT_LOGS, logs.slice(0, 50));
   },
 
-  // Reset to initial seed data
   resetAllMockData(): void {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.removeItem(STORAGE_KEYS.USERS);
@@ -108,6 +119,8 @@ export const mockStorage = {
       localStorage.removeItem(STORAGE_KEYS.EVENTS);
       localStorage.removeItem(STORAGE_KEYS.SETTINGS);
       localStorage.removeItem(STORAGE_KEYS.AUDIT_LOGS);
+      localStorage.removeItem(STORAGE_KEYS.HELP_REQUESTS);
+      localStorage.removeItem(STORAGE_KEYS.NOTIFICATIONS);
     }
     this.saveUsers(INITIAL_USERS);
     this.saveAttendanceDays(INITIAL_ATTENDANCE_DAYS);
@@ -115,13 +128,14 @@ export const mockStorage = {
     this.saveEvents(INITIAL_EVENTS);
     this.saveSettings(INITIAL_SETTINGS);
     this.saveAuditLogs(INITIAL_AUDIT_LOGS);
+    this.saveHelpRequests(INITIAL_HELP_REQUESTS);
+    this.saveNotifications(INITIAL_NOTIFICATIONS);
   },
 
   saveAuditLogs(logs: AuditLog[]): void {
     safeSetItem(STORAGE_KEYS.AUDIT_LOGS, logs);
   },
 
-  // Core Business Rule Helpers
   getEligibleActiveUsers(): User[] {
     return this.getUsers().filter(u => u.status === UserStatus.Active && !u.isDeleted);
   },
@@ -132,22 +146,20 @@ export const mockStorage = {
     if (!day) return null;
 
     const eligibleUsers = this.getEligibleActiveUsers();
-    const attendances = this.getAttendances().filter(a => a.attendanceDayId === dayId);
+    const attendances = this.getAttendances().filter(a => a.attendanceDayId === dayId && !a.isExcused);
     const eligibleIds = new Set(eligibleUsers.map(u => u.id));
-    
-    // Only count attendances from eligible active users
+
     const validAttendees = attendances.filter(a => eligibleIds.has(a.userId));
     const totalAttendees = validAttendees.length;
     const totalEligibleUsers = eligibleUsers.length;
 
-    // Rule: Absentees are ONLY finalized for closed/finalized days!
     let totalAbsentees = 0;
     if (day.status === 'Finalized') {
       totalAbsentees = Math.max(0, totalEligibleUsers - totalAttendees);
     }
 
-    const attendancePercentage = totalEligibleUsers > 0 
-      ? Math.round((totalAttendees / totalEligibleUsers) * 1000) / 10 
+    const attendancePercentage = totalEligibleUsers > 0
+      ? Math.round((totalAttendees / totalEligibleUsers) * 1000) / 10
       : 0;
 
     day.totalEligibleUsers = totalEligibleUsers;

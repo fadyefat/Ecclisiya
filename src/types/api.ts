@@ -1,4 +1,4 @@
-import { Gender, UserStatus, AttendanceMethod, EventStatus } from './common';
+import { Gender, UserStatus, AttendanceMethod, EventStatus, MeetingType } from './common';
 
 export interface UserSummaryDto {
   id: string;
@@ -16,9 +16,12 @@ export interface UserProfileDto {
   age?: number;
   levelId?: string;
   levelName?: string;
+  university?: string;
+  studyYear?: string;
   confessionFather?: string;
   address?: string;
   status: UserStatus;
+  points?: number;
   createdAtUtc: string;
   approvedAtUtc?: string | null;
 }
@@ -26,20 +29,28 @@ export interface UserProfileDto {
 export interface CreateUserDto {
   name: string;
   phoneNumber: string;
+  password?: string;
   gender: Gender;
   age?: number;
   levelId?: string;
+  university?: string;
+  studyYear?: string;
   confessionFather?: string;
   address?: string;
   status?: UserStatus;
+  points?: number;
 }
 
 export interface UpdateUserDto {
   name: string;
+  password?: string;
   age?: number;
   levelId?: string;
+  university?: string;
+  studyYear?: string;
   confessionFather?: string;
   address?: string;
+  points?: number;
 }
 
 export interface CreateAttendanceDayDto {
@@ -49,6 +60,9 @@ export interface CreateAttendanceDayDto {
   endAt: string;
   location: string;
   notes?: string;
+  meetingType?: MeetingType;
+  sessionCode?: string;
+  pointsReward?: number;
   isOpen?: boolean;
 }
 
@@ -59,6 +73,9 @@ export interface UpdateAttendanceDayDto {
   endAt: string;
   location: string;
   notes?: string;
+  meetingType?: MeetingType;
+  sessionCode?: string;
+  pointsReward?: number;
 }
 
 export interface AttendanceDayListItemDto {
@@ -93,7 +110,10 @@ export interface AttendanceUserItemDto {
   phoneNumber: string;
   gender: Gender;
   levelName?: string;
+  university?: string;
+  studyYear?: string;
   isAttended: boolean;
+  isExcused?: boolean;
   markedAtUtc?: string | null;
   method?: AttendanceMethod | null;
 }
@@ -102,6 +122,7 @@ export interface ManualAttendanceRequestDto {
   attendanceDayId: string;
   userId: string;
   reason?: string;
+  isExcused?: boolean;
 }
 
 export interface AdminDashboardSummaryDto {
@@ -154,4 +175,5 @@ export interface AppLinksDto {
   maleGroupWhatsAppUrl?: string;
   femaleGroupWhatsAppUrl?: string;
   facebookPageUrl?: string;
+  verseOfTheDay?: string;
 }

@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom/vitest';
 
-// Polyfill window.matchMedia for tests
 if (typeof window !== 'undefined') {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,

@@ -7,6 +7,7 @@ import { AttendanceDayDetailsPage } from '../features/attendance-days/pages/Atte
 import { EventsPage } from '../features/events/pages/EventsPage';
 import { ReportsPage } from '../features/reports/pages/ReportsPage';
 import { SettingsPage } from '../features/settings/pages/SettingsPage';
+import { MobileAppPage } from '../features/mobile-app/pages/MobileAppPage';
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
       {
         path: 'events',
         element: <EventsPage />,
+      },
+      {
+        path: 'mobile-app',
+        element: <MobileAppPage />,
       },
       {
         path: 'reports',

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Users, 
-  UserCheck, 
-  Calendar, 
-  CheckCircle2, 
-  XCircle, 
-  Percent, 
+import {
+  Users,
+  UserCheck,
+  Calendar,
+  CheckCircle2,
+  XCircle,
+  Percent,
   ArrowLeft,
   CalendarCheck,
   History
@@ -27,7 +27,6 @@ import { CreateEventDialog } from '../../events/components/CreateEventDialog';
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
 
-  // Date range state
   const [dateRange, setDateRange] = useState<DateFilterRange>({
     key: '30days',
     label: 'آخر 30 يومًا',
@@ -35,11 +34,9 @@ export const DashboardPage: React.FC = () => {
     to: undefined,
   });
 
-  // Modal dialog states
   const [createSessionOpen, setCreateSessionOpen] = useState(false);
   const [createEventOpen, setCreateEventOpen] = useState(false);
 
-  // Queries
   const { data: summary, refetch: refetchSummary } = useQuery({
     queryKey: ['dashboard-summary', dateRange.from, dateRange.to],
     queryFn: () => dashboardService.getSummary(dateRange.from, dateRange.to),
@@ -68,7 +65,7 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Page Header with Greeting & Date Filter */}
+
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between pb-4 border-b border-[#30333E]/60">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#F1F2F7] tracking-tight">
@@ -82,7 +79,6 @@ export const DashboardPage: React.FC = () => {
         <DateRangeFilter value={dateRange} onChange={setDateRange} />
       </div>
 
-      {/* 6 Key Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
         <StatCard
           title="الأعضاء النشطون"
@@ -133,19 +129,16 @@ export const DashboardPage: React.FC = () => {
         />
       </div>
 
-      {/* Quick Actions */}
       <QuickActions
         pendingCount={summary?.totalPendingUsers}
         onCreateSessionClick={() => setCreateSessionOpen(true)}
         onCreateEventClick={() => setCreateEventOpen(true)}
       />
 
-      {/* Attendance Trend Chart */}
       <DashboardCharts data={trendData || []} isLoading={isTrendLoading} />
 
-      {/* Grid: Recent Sessions Table + Activity Log */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Attendance Sessions (2 cols) */}
+
         <div className="lg:col-span-2">
           <Card className="hover:border-[#454958] transition-colors h-full flex flex-col justify-between">
             <div>
@@ -259,7 +252,6 @@ export const DashboardPage: React.FC = () => {
           </Card>
         </div>
 
-        {/* Activity Audit Log (1 col) */}
         <div>
           <Card className="hover:border-[#454958] transition-colors h-full">
             <CardHeader>
@@ -302,7 +294,6 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Dialogs */}
       <CreateAttendanceDayDialog
         open={createSessionOpen}
         onOpenChange={setCreateSessionOpen}

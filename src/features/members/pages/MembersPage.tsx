@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
-import { 
-  UserPlus, 
-  Search, 
-  Filter, 
-  RotateCcw, 
-  CheckCircle, 
-  Eye, 
-  Edit3, 
+import {
+  UserPlus,
+  Search,
+  Filter,
+  RotateCcw,
+  CheckCircle,
+  Eye,
+  Edit3,
   Trash2,
   PauseCircle,
-  PlayCircle
+  PlayCircle,
+  Award,
 } from 'lucide-react';
 import { PageHeader } from '../../../components/shared/PageHeader';
 import { DataTable, Column } from '../../../components/shared/DataTable';
@@ -34,7 +35,6 @@ export const MembersPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialStatus = searchParams.get('status');
 
-  // Filter & Pagination State
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<UserStatus | undefined>(
     initialStatus ? Number(initialStatus) : undefined
@@ -44,7 +44,6 @@ export const MembersPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  // Modal states
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
@@ -52,7 +51,6 @@ export const MembersPage: React.FC = () => {
   const [deactivateModalOpen, setDeactivateModalOpen] = useState(false);
   const [userToDeactivate, setUserToDeactivate] = useState<User | null>(null);
 
-  // Query
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['members', page, pageSize, search, statusFilter, genderFilter, levelFilter],
     queryFn: () =>
@@ -124,8 +122,8 @@ export const MembersPage: React.FC = () => {
           </div>
           <div className="flex flex-col min-w-0">
             <span className="font-semibold text-[#F1F2F7] truncate">{user.name}</span>
-            <span className="text-[11px] text-[#A5A8B5]">
-              {user.gender === Gender.Male ? 'ذكر' : 'أنثى'} • {user.age ? `${user.age} سنة` : ''}
+            <span className="text-[11px] text-[#A5A8B5] truncate">
+              {user.university || (user.gender === Gender.Male ? 'ذكر' : 'أنثى')}
             </span>
           </div>
         </div>
@@ -140,10 +138,10 @@ export const MembersPage: React.FC = () => {
       ),
     },
     {
-      header: 'المرحلة',
+      header: 'الفرقة / المرحلة',
       cell: (user) => (
         <span className="text-xs text-[#F1F2F7] bg-[#20232B] px-2 py-0.5 rounded-lg border border-[#30333E]">
-          {user.levelName || 'عام'}
+          {user.studyYear || user.levelName || 'عام'}
         </span>
       ),
     },
@@ -152,6 +150,15 @@ export const MembersPage: React.FC = () => {
       cell: (user) => (
         <span className="text-xs text-[#A5A8B5]">
           {user.confessionFather || '—'}
+        </span>
+      ),
+    },
+    {
+      header: 'النقاط',
+      cell: (user) => (
+        <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#DDAA48]">
+          <Award className="h-3.5 w-3.5" />
+          {user.points ?? 0}
         </span>
       ),
     },
@@ -253,7 +260,7 @@ export const MembersPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         title="إدارة الأعضاء والمخدومين"
-        description="استعراض طلبات العضوية، مراجعة وتعديل بيانات الأعضاء ومتابعة حالات الحسابات"
+        description="استعراض طلبات العضوية من تطبيق الموبايل، مراجعة وتعديل بيانات الطلاب ومتابعة نقاطهم"
         action={
           <Button onClick={() => setAddModalOpen(true)} className="gap-2 shadow-md shadow-[#695CFF]/20">
             <UserPlus className="h-4 w-4" />
@@ -262,13 +269,11 @@ export const MembersPage: React.FC = () => {
         }
       />
 
-      {/* Filter and Search Bar */}
       <div className="p-4 rounded-2xl bg-[#17191F] border border-[#30333E] space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {/* Search Input */}
           <div className="lg:col-span-1">
             <Input
-              placeholder="البحث بالاسم أو رقم الهاتف..."
+              placeholder="البحث بالاسم أو الهاتف أو الجامعة..."
               icon={<Search className="h-4 w-4" />}
               value={search}
               onChange={(e) => {
@@ -278,7 +283,6 @@ export const MembersPage: React.FC = () => {
             />
           </div>
 
-          {/* Status Filter */}
           <div>
             <Select
               value={statusFilter !== undefined ? String(statusFilter) : 'all'}
@@ -295,7 +299,6 @@ export const MembersPage: React.FC = () => {
             </Select>
           </div>
 
-          {/* Gender Filter */}
           <div>
             <Select
               value={genderFilter !== undefined ? String(genderFilter) : 'all'}
@@ -311,7 +314,6 @@ export const MembersPage: React.FC = () => {
             </Select>
           </div>
 
-          {/* Level Filter */}
           <div>
             <Select
               value={levelFilter}
@@ -330,7 +332,6 @@ export const MembersPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Quick status tabs & Reset button */}
         <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#30333E]/50 text-xs">
           <div className="flex items-center gap-1.5">
             <span className="text-[#A5A8B5] flex items-center gap-1 ml-1 font-medium">
@@ -377,7 +378,6 @@ export const MembersPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Members DataTable */}
       <DataTable
         columns={columns}
         data={data?.items || []}
@@ -396,14 +396,12 @@ export const MembersPage: React.FC = () => {
         keyExtractor={(item) => item.id}
       />
 
-      {/* Add Member Dialog */}
       <AddMemberDialog
         open={addModalOpen}
         onOpenChange={setAddModalOpen}
         onSuccess={() => refetch()}
       />
 
-      {/* Edit Member Dialog */}
       <EditMemberDialog
         user={selectedUser}
         open={editModalOpen}
@@ -411,7 +409,6 @@ export const MembersPage: React.FC = () => {
         onSuccess={() => refetch()}
       />
 
-      {/* Member Details Modal */}
       <MemberDetailsModal
         user={selectedUser}
         open={detailsModalOpen}
@@ -425,7 +422,6 @@ export const MembersPage: React.FC = () => {
         }}
       />
 
-      {/* Deactivate User Confirmation Dialog */}
       <ConfirmDialog
         open={deactivateModalOpen}
         onOpenChange={setDeactivateModalOpen}

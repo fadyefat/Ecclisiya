@@ -90,7 +90,6 @@ export function DataTable<T>({
         </table>
       </div>
 
-      {/* Pagination Bar */}
       {onPageChange && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2 text-xs text-[#A5A8B5]">
           <div className="flex items-center gap-2">

@@ -1,28 +1,26 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Users, 
-  CalendarCheck, 
-  Sparkles, 
-  BarChart3, 
-  Settings, 
-  Church, 
-  ChevronRight, 
+import {
+  LayoutDashboard,
+  Users,
+  CalendarCheck,
+  Sparkles,
+  BarChart3,
+  Settings,
+  Church,
+  ChevronRight,
   ChevronLeft,
   ShieldCheck,
-  RotateCcw
+  Smartphone,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { APP_NAME, APP_SUBTITLE } from '../../lib/constants';
-import { settingsService } from '../../features/settings/services/settingsService';
-import { toast } from 'sonner';
 
 interface AppSidebarProps {
   collapsed: boolean;
   onToggleCollapse: () => void;
   className?: string;
-  onItemClick?: () => void; // For mobile drawer close
+  onItemClick?: () => void;
 }
 
 export const AppSidebar: React.FC<AppSidebarProps> = ({
@@ -42,15 +40,21 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
     },
     {
       to: '/members',
-      label: 'الأعضاء',
+      label: 'الأعضاء والطلاب',
       icon: Users,
-      badge: '3 معلق',
+      badge: 'مباشر',
     },
     {
       to: '/attendance-days',
       label: 'جلسات الحضور',
       icon: CalendarCheck,
       badge: 'مفتوح',
+    },
+    {
+      to: '/mobile-app',
+      label: 'تطبيق الموبايل',
+      icon: Smartphone,
+      badge: 'جديد',
     },
     {
       to: '/events',
@@ -72,14 +76,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
     },
   ];
 
-  const handleResetDemoData = async () => {
-    if (window.confirm('هل أنت متأكد من رغبتك في إعادة تعيين جميع البيانات التجريبية إلى حالتها الأصلية؟')) {
-      await settingsService.resetAllData();
-      toast.success('تمت إعادة تعيين البيانات التجريبية بنجاح');
-      window.location.reload();
-    }
-  };
-
   return (
     <aside
       className={cn(
@@ -88,7 +84,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
         className
       )}
     >
-      {/* Top Header / Branding */}
       <div>
         <div className="flex h-16 items-center justify-between px-4 border-b border-[#30333E]/60">
           <div className="flex items-center gap-3 overflow-hidden">
@@ -107,7 +102,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
             )}
           </div>
 
-          {/* Desktop collapse toggle button */}
           <button
             type="button"
             onClick={onToggleCollapse}
@@ -118,28 +112,20 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
           </button>
         </div>
 
-        {/* Demo Mode Notice Pill */}
         {!collapsed && (
-          <div className="mx-4 mt-4 p-2.5 rounded-xl bg-[#695CFF]/10 border border-[#695CFF]/20 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1.5 text-[#9D94FF] font-medium">
+          <div className="mx-4 mt-4 p-2.5 rounded-xl bg-[#27CFA5]/10 border border-[#27CFA5]/25 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1.5 text-[#27CFA5] font-medium">
               <span className="h-2 w-2 rounded-full bg-[#27CFA5] animate-pulse" />
-              <span>وضع المعاينة التجريبي</span>
+              <span>متصل بـ Supabase Cloud</span>
             </div>
-            <button
-              onClick={handleResetDemoData}
-              className="text-[#A5A8B5] hover:text-white transition-colors p-1"
-              title="إعادة تعيين البيانات"
-            >
-              <RotateCcw className="h-3.5 w-3.5" />
-            </button>
           </div>
         )}
 
-        {/* Navigation Links */}
         <nav className="mt-4 px-3 space-y-1.5">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = location.pathname === item.to || 
+            const isActive =
+              location.pathname === item.to ||
               (item.to !== '/dashboard' && location.pathname.startsWith(item.to));
 
             return (
@@ -165,12 +151,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                   <div className="flex flex-1 items-center justify-between">
                     <span className="truncate">{item.label}</span>
                     {item.badge && !isActive && (
-                      <span className={cn(
-                        'text-[10px] px-2 py-0.5 rounded-full font-medium',
-                        item.badge === 'مفتوح'
-                          ? 'bg-[#27CFA5]/15 text-[#27CFA5] border border-[#27CFA5]/30'
-                          : 'bg-[#DDAA48]/15 text-[#DDAA48] border border-[#DDAA48]/30'
-                      )}>
+                      <span
+                        className={cn(
+                          'text-[10px] px-2 py-0.5 rounded-full font-medium',
+                          item.badge === 'مفتوح' || item.badge === 'مباشر'
+                            ? 'bg-[#27CFA5]/15 text-[#27CFA5] border border-[#27CFA5]/30'
+                            : 'bg-[#DDAA48]/15 text-[#DDAA48] border border-[#DDAA48]/30'
+                        )}
+                      >
                         {item.badge}
                       </span>
                     )}
@@ -182,12 +170,13 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
         </nav>
       </div>
 
-      {/* Admin User Profile Section */}
       <div className="p-3 border-t border-[#30333E]/60">
-        <div className={cn(
-          'flex items-center gap-3 rounded-xl bg-[#20232B] p-2.5 border border-[#30333E]',
-          collapsed && 'justify-center p-2'
-        )}>
+        <div
+          className={cn(
+            'flex items-center gap-3 rounded-xl bg-[#20232B] p-2.5 border border-[#30333E]',
+            collapsed && 'justify-center p-2'
+          )}
+        >
           <div className="relative">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#695CFF] to-[#7A70FF] text-white font-bold text-xs shadow-sm">
               أدمن

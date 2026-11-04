@@ -29,12 +29,12 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-      {/* Backdrop */}
+
       <div
         className="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity animate-in fade-in"
         onClick={() => onOpenChange(false)}
       />
-      {/* Content wrapper */}
+
       <div className="relative z-50 w-full max-w-lg my-8">{children}</div>
     </div>
   );

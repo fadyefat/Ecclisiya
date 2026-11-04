@@ -1,10 +1,6 @@
 import { format, parseISO, isValid } from 'date-fns';
 import { arEG } from 'date-fns/locale';
 
-/**
- * Formats a date string or Date object into Arabic readable date
- * e.g., "14 أكتوبر 2026"
- */
 export function formatArabicDate(dateInput: string | Date | null | undefined): string {
   if (!dateInput) return '—';
   try {
@@ -16,9 +12,6 @@ export function formatArabicDate(dateInput: string | Date | null | undefined): s
   }
 }
 
-/**
- * Formats a date into short date "yyyy/MM/dd"
- */
 export function formatShortDate(dateInput: string | Date | null | undefined): string {
   if (!dateInput) return '—';
   try {
@@ -30,9 +23,6 @@ export function formatShortDate(dateInput: string | Date | null | undefined): st
   }
 }
 
-/**
- * Formats time "hh:mm a" in Arabic (e.g., "05:00 م")
- */
 export function formatArabicTime(dateInput: string | Date | null | undefined): string {
   if (!dateInput) return '—';
   try {
@@ -44,9 +34,6 @@ export function formatArabicTime(dateInput: string | Date | null | undefined): s
   }
 }
 
-/**
- * Formats date and time together
- */
 export function formatArabicDateTime(dateInput: string | Date | null | undefined): string {
   if (!dateInput) return '—';
   try {
@@ -58,9 +45,6 @@ export function formatArabicDateTime(dateInput: string | Date | null | undefined
   }
 }
 
-/**
- * Get day name in Arabic (e.g., "الجمعة")
- */
 export function getArabicDayName(dateInput: string | Date | null | undefined): string {
   if (!dateInput) return '';
   try {

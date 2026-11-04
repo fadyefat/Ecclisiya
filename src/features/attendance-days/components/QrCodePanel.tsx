@@ -4,13 +4,13 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../..
 import { Button } from '../../../components/ui/button';
 import { AttendanceDay } from '../../../types/common';
 import { attendanceDaysService } from '../services/attendanceDaysService';
-import { 
-  Download, 
-  Printer, 
-  RefreshCw, 
-  Play, 
-  Square, 
-  Sparkles
+import {
+  Download,
+  Printer,
+  RefreshCw,
+  Play,
+  Square,
+  Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -107,12 +107,12 @@ export const QrCodePanel: React.FC<QrCodePanelProps> = ({ day, onRefresh }) => {
         </head>
         <body>
           <div class="container">
-            <h1>Ecclesia — إدارة الحضور الكنسي</h1>
-            <h2>${day.title}</h2>
+            <h1>Ecclesia — أسرة الملاك غبريال</h1>
+            <h2>${day.title} (${day.sessionCode || ''})</h2>
             <div class="meta">
               <p>التاريخ: ${day.date}</p>
               <p>المكان: ${day.location}</p>
-              <p>امسح الرمز عبر تطبيق الهاتف لتسجيل حضورك في الاجتماع</p>
+              <p>امسح الرمز عبر تطبيق الهاتف لتسجيل حضورك في الاجتماع (+${day.pointsReward || 10} نقطة)</p>
             </div>
             <img src="${pngUrl}" alt="QR Code" />
             <div class="footer">
@@ -152,7 +152,7 @@ export const QrCodePanel: React.FC<QrCodePanelProps> = ({ day, onRefresh }) => {
         toast.success('تم إغلاق استقبال التسجيل');
       } else {
         await attendanceDaysService.openAttendanceDay(day.id);
-        toast.success('تم فتح استقبال تسجيل الحضور وتحديث الرمز');
+        toast.success('تم فتح استقبال تسجيل الحضور وتحديث الرمز وإشعار الطلاب');
       }
       onRefresh();
     } catch (err: any) {
@@ -189,7 +189,6 @@ export const QrCodePanel: React.FC<QrCodePanelProps> = ({ day, onRefresh }) => {
       </CardHeader>
 
       <CardContent className="space-y-6">
-        {/* Visual QR Code Display Container */}
         <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-[#101116] border border-[#30333E] relative">
           <div
             ref={canvasRef}
@@ -203,7 +202,6 @@ export const QrCodePanel: React.FC<QrCodePanelProps> = ({ day, onRefresh }) => {
             />
           </div>
 
-          {/* Hidden SVG for SVG download export */}
           <div className="hidden">
             <QRCodeSVG
               id={`qr-svg-${day.id}`}
@@ -214,26 +212,23 @@ export const QrCodePanel: React.FC<QrCodePanelProps> = ({ day, onRefresh }) => {
             />
           </div>
 
-          {/* Token String snippet */}
           <div className="mt-4 text-center space-y-1">
             <span className="text-[10px] text-[#A5A8B5] font-mono">
-              معرّف الجلسة الرمزي:
+              معرّف الجلسة الرمزي ({day.sessionCode || '#405'} — +{day.pointsReward ?? 10} نقطة):
             </span>
             <p className="text-xs font-mono font-semibold text-[#9D94FF] bg-[#20232B] px-3 py-1 rounded-lg border border-[#30333E] max-w-sm truncate" dir="ltr">
               {day.qrToken}
             </p>
           </div>
 
-          {/* Demo Disclaimer notice */}
           <div className="mt-4 flex items-center gap-2 p-3 rounded-xl bg-[#695CFF]/10 border border-[#695CFF]/25 text-[11px] text-[#9D94FF] max-w-md">
             <Sparkles className="h-4 w-4 shrink-0 text-[#DDAA48]" />
             <span>
-              <strong>وضع المحاكاة التجريبي:</strong> رمز QR مرئي وحقيقي تقنيًا، ويحمل Token تجريبيًا يمكن قراءته بأي كاميرا أو تطبيق تجريبي.
+              <strong>متصل بتطبيق الموبايل:</strong> عند مسح هذا الرمز من تطبيق Angel Gabriel يتم التحقق من الصلاحية وتسجيل الحضور ومنح النقاط فورياً.
             </span>
           </div>
         </div>
 
-        {/* Action Controls Toolbar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-[#30333E]/60">
           <Button
             variant="outline"
@@ -278,7 +273,6 @@ export const QrCodePanel: React.FC<QrCodePanelProps> = ({ day, onRefresh }) => {
           </Button>
         </div>
 
-        {/* Status Toggle Button */}
         <div className="pt-1">
           {day.isOpen ? (
             <Button

@@ -1,12 +1,9 @@
-/**
- * API configuration and runtime settings.
- * In production, requests will route to VITE_API_BASE_URL (ASP.NET Core Web API).
- * In Demo Mode, client-side Mock Services provide full realistic interactivity.
- */
+import { isSupabaseEnabled, MOBILE_API_URL } from '../supabase';
+
 export const API_CONFIG = {
-  baseUrl: import.meta.env.VITE_API_BASE_URL || '/api/v1',
-  isDemoMode: true,
-  simulatedDelayMs: 250, // simulated network latency for realistic loading skeletons
+  baseUrl: MOBILE_API_URL,
+  isDemoMode: !isSupabaseEnabled(),
+  simulatedDelayMs: 120,
 };
 
 export async function simulateNetworkDelay(ms = API_CONFIG.simulatedDelayMs): Promise<void> {

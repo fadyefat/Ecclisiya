@@ -48,7 +48,6 @@ describe('Theme System & Settings', () => {
       </ThemeProvider>
     );
 
-    // Switch to dark
     await user.click(screen.getByText('Set Dark'));
     expect(screen.getByTestId('theme-mode').textContent).toBe('dark');
     expect(screen.getByTestId('resolved-theme').textContent).toBe('dark');
@@ -56,7 +55,6 @@ describe('Theme System & Settings', () => {
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
     expect(localStorage.getItem('ecclisiya_theme_mode')).toBe('dark');
 
-    // Toggle back to light
     await user.click(screen.getByText('Toggle'));
     expect(screen.getByTestId('theme-mode').textContent).toBe('light');
     expect(document.documentElement.classList.contains('light')).toBe(true);
@@ -79,12 +77,10 @@ describe('Theme System & Settings', () => {
       </MemoryRouter>
     );
 
-    // Verify Theme card headers
     expect(await screen.findByText('مظهر التطبيق والسمة (Dark & Light Mode)')).toBeInTheDocument();
     expect(screen.getByText('الوضع الفاتح (هوية الكنيسة)')).toBeInTheDocument();
     expect(screen.getByText('الوضع الداكن (Dark Mode)')).toBeInTheDocument();
 
-    // Click on Dark Mode card
     const darkModeButton = screen.getByText('الوضع الداكن (Dark Mode)').closest('button');
     expect(darkModeButton).toBeInTheDocument();
     if (darkModeButton) {
@@ -92,7 +88,6 @@ describe('Theme System & Settings', () => {
       expect(document.documentElement.classList.contains('dark')).toBe(true);
     }
 
-    // Click on Light Mode card
     const lightModeButton = screen.getByText('الوضع الفاتح (هوية الكنيسة)').closest('button');
     expect(lightModeButton).toBeInTheDocument();
     if (lightModeButton) {

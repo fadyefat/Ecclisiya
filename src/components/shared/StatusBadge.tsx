@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge } from '../ui/badge';
 import { UserStatus, AttendanceDayStatus, EventStatus, AttendanceMethod } from '../../types/common';
-import { QrCode, UserCheck } from 'lucide-react';
+import { QrCode, UserCheck, FileCheck } from 'lucide-react';
 
 interface UserStatusBadgeProps {
   status: UserStatus;
@@ -76,6 +76,14 @@ export const AttendanceMethodBadge: React.FC<MethodBadgeProps> = ({ method }) =>
       <Badge variant="amber" className="gap-1">
         <UserCheck className="h-3 w-3" />
         يدوي
+      </Badge>
+    );
+  }
+  if (method === AttendanceMethod.Excused) {
+    return (
+      <Badge variant="gray" className="gap-1">
+        <FileCheck className="h-3 w-3" />
+        غياب بعذر
       </Badge>
     );
   }

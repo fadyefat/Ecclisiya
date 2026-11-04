@@ -23,13 +23,11 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({ open, onClos
 
   return (
     <div className="fixed inset-0 z-50 lg:hidden">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      {/* Drawer */}
       <div className="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-[#17191F] shadow-2xl transition-transform transform translate-x-0 z-50 flex flex-col">
         <div className="absolute left-3 top-3.5 z-10">
           <button

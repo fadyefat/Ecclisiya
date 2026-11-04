@@ -1,13 +1,13 @@
 import React from 'react';
-import { 
-  ResponsiveContainer, 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend 
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend
 } from 'recharts';
 import { AttendanceTrendItemDto } from '../../../types/api';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/card';
@@ -55,7 +55,6 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({ data, isLoadin
   const { resolvedTheme } = useTheme();
   const isLight = resolvedTheme === 'light';
 
-  // Exact client design colors in Light Mode, crisp high-contrast in Dark Mode
   const gridStroke = isLight ? '#EEE7E4' : '#30333E';
   const axisStroke = isLight ? '#78686B' : '#6C7080';
   const attendeesColor = isLight ? '#36825C' : '#27CFA5';

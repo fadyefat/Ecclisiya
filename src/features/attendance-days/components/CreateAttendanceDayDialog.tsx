@@ -5,8 +5,11 @@ import * as z from 'zod';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../../../components/ui/dialog';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
+import { Select } from '../../../components/ui/select';
 import { Textarea } from '../../../components/ui/textarea';
 import { attendanceDaysService } from '../services/attendanceDaysService';
+import { MEETING_TYPES } from '../../../lib/constants';
+import { MeetingType } from '../../../types/common';
 import { toast } from 'sonner';
 
 const schema = z.object({
@@ -15,6 +18,9 @@ const schema = z.object({
   startTime: z.string().min(1, 'يرجى تحديد وقت بداية الاجتماع'),
   endTime: z.string().min(1, 'يرجى تحديد وقت نهاية الاجتماع'),
   location: z.string().min(2, 'يرجى إدخال مكان الاجتماع'),
+  meetingType: z.string().optional(),
+  sessionCode: z.string().optional(),
+  pointsReward: z.any().optional(),
   notes: z.string().optional(),
   isOpen: z.boolean().optional(),
 }).refine(data => {
@@ -33,6 +39,9 @@ type FormValues = {
   startTime: string;
   endTime: string;
   location: string;
+  meetingType?: MeetingType;
+  sessionCode?: string;
+  pointsReward?: number;
   notes?: string;
   isOpen?: boolean;
 };
@@ -62,7 +71,10 @@ export const CreateAttendanceDayDialog: React.FC<CreateAttendanceDayDialogProps>
       date: new Date().toISOString().split('T')[0],
       startTime: '18:00',
       endTime: '20:30',
-      location: 'القاعة الرئيسية — كنيسة العذراء',
+      location: 'قاعة الملاك غبريال — الدور الثاني',
+      meetingType: 'youth',
+      sessionCode: '#406',
+      pointsReward: 10,
       notes: '',
       isOpen: false,
     },
@@ -80,6 +92,9 @@ export const CreateAttendanceDayDialog: React.FC<CreateAttendanceDayDialogProps>
         startAt,
         endAt,
         location: values.location,
+        meetingType: (values.meetingType || 'youth') as MeetingType,
+        sessionCode: values.sessionCode,
+        pointsReward: values.pointsReward ? Number(values.pointsReward) : 10,
         notes: values.notes,
         isOpen: !!values.isOpen,
       });
@@ -101,7 +116,7 @@ export const CreateAttendanceDayDialog: React.FC<CreateAttendanceDayDialogProps>
         <DialogHeader>
           <DialogTitle>إنشاء جلسة حضور جديدة</DialogTitle>
           <DialogDescription>
-            أدخل تفاصيل الاجتماع أو الخدمة لتسجيل الحضور وتوليد رمز QR
+            أدخل تفاصيل الاجتماع ونوعه ونقاط الحضور لتطبيق الموبايل وتوليد رمز QR
           </DialogDescription>
         </DialogHeader>
 
@@ -111,10 +126,47 @@ export const CreateAttendanceDayDialog: React.FC<CreateAttendanceDayDialogProps>
               عنوان الاجتماع / الخدمة <span className="text-[#E85D75]">*</span>
             </label>
             <Input
-              placeholder="مثال: اجتماع شباب الجمعة — الأسبوع الثالث"
+              placeholder="مثال: اجتماع أسرة الملاك غبريال — الأسبوع الثالث"
               {...register('title')}
               error={errors.title?.message}
             />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-[#A5A8B5] mb-1">
+                نوع الاجتماع (الموبايل)
+              </label>
+              <Select {...register('meetingType')}>
+                {MEETING_TYPES.map((mt) => (
+                  <option key={mt.key} value={mt.key}>
+                    {mt.label}
+                  </option>
+                ))}
+              </Select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-[#A5A8B5] mb-1">
+                كود الجلسة
+              </label>
+              <Input
+                placeholder="#406"
+                dir="ltr"
+                {...register('sessionCode')}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-[#A5A8B5] mb-1">
+                مكافأة النقاط
+              </label>
+              <Input
+                type="number"
+                min={0}
+                {...register('pointsReward')}
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -155,7 +207,7 @@ export const CreateAttendanceDayDialog: React.FC<CreateAttendanceDayDialogProps>
               مكان الاجتماع <span className="text-[#E85D75]">*</span>
             </label>
             <Input
-              placeholder="مثال: القاعة الكبرى / كنيسة مارمرقس"
+              placeholder="مثال: قاعة الملاك غبريال — الدور الثاني"
               {...register('location')}
               error={errors.location?.message}
             />
@@ -163,7 +215,7 @@ export const CreateAttendanceDayDialog: React.FC<CreateAttendanceDayDialogProps>
 
           <div>
             <label className="block text-xs font-medium text-[#A5A8B5] mb-1">
-              ملاحظات أو تعليمات إضافية
+              ملاحظات أو موضوع الكلمة الروحية
             </label>
             <Textarea
               placeholder="ملاحظات تنظيمية، موضوع الكلمة الروحية..."

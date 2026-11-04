@@ -40,12 +40,13 @@ export const membersService = {
       const { data, error } = await supabase
         .from('users')
         .select('*')
-        .eq('is_deleted', false);
+        .eq('is_deleted', false)
+        .eq('role', UserRole.User);
       if (error) throw new Error(error.message);
       users = (data || []).map(r => mapDbUser(r as Record<string, unknown>));
     } else {
       await simulateNetworkDelay();
-      users = mockStorage.getUsers().filter(u => !u.isDeleted);
+      users = mockStorage.getUsers().filter(u => !u.isDeleted && u.role !== UserRole.Admin);
     }
 
     if (search.trim()) {

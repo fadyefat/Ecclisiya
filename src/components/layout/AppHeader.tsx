@@ -1,8 +1,10 @@
 import React from 'react';
-import { Menu, Bell, Plus, Search, Smartphone, Sun, Moon } from 'lucide-react';
+import { Menu, Bell, Plus, Search, Sun, Moon, LogOut } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../../lib/theme-context';
+import { authService } from '../../features/auth/services/authService';
+import { toast } from 'sonner';
 
 interface AppHeaderProps {
   onOpenMobileMenu: () => void;
@@ -15,13 +17,18 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileMenu }) => {
 
   const getPageTitle = (pathname: string) => {
     if (pathname.startsWith('/dashboard')) return 'لوحة التحكم';
-    if (pathname.startsWith('/members')) return 'إدارة الأعضاء والطلاب';
+    if (pathname.startsWith('/members')) return 'إدارة الأعضاء';
     if (pathname.startsWith('/attendance-days')) return 'جلسات الحضور';
-    if (pathname.startsWith('/mobile-app')) return 'بوابة تطبيق الموبايل';
     if (pathname.startsWith('/events')) return 'إدارة الفعاليات';
     if (pathname.startsWith('/reports')) return 'تقارير الحضور والغياب';
     if (pathname.startsWith('/settings')) return 'إعدادات الكنيسة والتطبيق';
     return 'لوحة التحكم';
+  };
+
+  const handleLogout = () => {
+    authService.logout();
+    toast.success('تم تسجيل الخروج بنجاح');
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -59,15 +66,6 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileMenu }) => {
       <div className="flex items-center gap-2 sm:gap-3">
         <button
           type="button"
-          onClick={() => navigate('/mobile-app')}
-          className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-[#20232B] border border-[#30333E] text-xs text-[#A5A8B5] hover:text-[#F1F2F7] cursor-pointer"
-        >
-          <Smartphone className="h-3.5 w-3.5 text-[#27CFA5]" />
-          <span>تطبيق الموبايل متصل</span>
-        </button>
-
-        <button
-          type="button"
           onClick={toggleTheme}
           className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-[#30333E] bg-[#20232B] text-[#A5A8B5] hover:text-[#F1F2F7] hover:bg-[#262A34] transition-colors"
           title={resolvedTheme === 'dark' ? 'التبديل إلى الوضع الفاتح (هوية الكنيسة)' : 'التبديل إلى الوضع الداكن'}
@@ -83,14 +81,10 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileMenu }) => {
         <button
           type="button"
           className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-[#30333E] bg-[#20232B] text-[#A5A8B5] hover:text-[#F1F2F7] hover:bg-[#262A34] transition-colors"
-          title="طلبات المساعدة والإشعارات"
-          onClick={() => navigate('/mobile-app')}
+          title="طلبات العضوية"
+          onClick={() => navigate('/members')}
         >
           <Bell className="h-4 w-4" />
-          <span className="absolute top-2 left-2 flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E85D75] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#E85D75]"></span>
-          </span>
         </button>
 
         <Button
@@ -102,6 +96,15 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileMenu }) => {
           <span className="hidden sm:inline">إنشاء اجتماع</span>
           <span className="sm:hidden">اجتماع</span>
         </Button>
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#30333E] bg-[#20232B] text-[#E85D75] hover:bg-[#E85D75]/10 transition-colors cursor-pointer"
+          title="تسجيل الخروج"
+        >
+          <LogOut className="h-4 w-4" />
+        </button>
       </div>
     </header>
   );

@@ -22,7 +22,9 @@ export const dashboardService = {
       if (usrErr) throw new Error(usrErr.message);
       if (dayErr) throw new Error(dayErr.message);
 
-      const allUsers = (usrData || []).map(r => mapDbUser(r as Record<string, unknown>));
+      const allUsers = (usrData || [])
+        .map(r => mapDbUser(r as Record<string, unknown>))
+        .filter(u => u.role !== 2);
       const totalUsers = allUsers.filter(u => u.status === UserStatus.Active).length;
       const totalPendingUsers = allUsers.filter(u => u.status === UserStatus.Pending).length;
 

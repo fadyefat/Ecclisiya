@@ -5,14 +5,12 @@ import * as z from 'zod';
 import { useQuery } from '@tanstack/react-query';
 import {
   Save,
-  RotateCcw,
   Church,
   Phone,
   Mail,
   MessageCircle,
   Users,
   Share2,
-  Sparkles,
   ExternalLink,
   Sun,
   Moon,
@@ -20,14 +18,15 @@ import {
   Check,
   Palette,
   BookOpen,
+  Lock,
 } from 'lucide-react';
 import { PageHeader } from '../../../components/shared/PageHeader';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Textarea } from '../../../components/ui/textarea';
-import { ConfirmDialog } from '../../../components/shared/ConfirmDialog';
 import { settingsService } from '../services/settingsService';
+import { authService } from '../../auth/services/authService';
 import { AppSetting } from '../../../types/common';
 import { useTheme, ThemeMode } from '../../../lib/theme-context';
 import { toast } from 'sonner';
@@ -48,8 +47,10 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export const SettingsPage: React.FC = () => {
-  const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [isChangingPass, setIsChangingPass] = useState(false);
   const { themeMode, setThemeMode } = useTheme();
 
   const { data: settings, isLoading, refetch } = useQuery({
@@ -104,7 +105,7 @@ export const SettingsPage: React.FC = () => {
       if (values.themeMode) {
         setThemeMode(values.themeMode);
       }
-      toast.success('تم حفظ إعدادات الكنيسة وآية الأسبوع والمظهر بنجاح');
+      toast.success('تم حفظ إعدادات الكنيسة والمظهر بنجاح');
       refetch();
     } catch (err: any) {
       toast.error(err.message || 'حدث خطأ أثناء حفظ الإعدادات');
@@ -113,15 +114,22 @@ export const SettingsPage: React.FC = () => {
     }
   };
 
-  const handleResetAllData = async () => {
+  const handleChangeAdminPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentPassword.trim() || !newPassword.trim()) {
+      toast.error('يرجى إدخال كلمة المرور الحالية والجديدة');
+      return;
+    }
     try {
-      await settingsService.resetAllData();
-      toast.success('تمت إعادة تعيين جميع البيانات التجريبية إلى حالتها الابتدائية');
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
-    } catch {
-      toast.error('حدث خطأ أثناء إعادة التعيين');
+      setIsChangingPass(true);
+      await authService.changePassword(currentPassword, newPassword);
+      toast.success('تم تغيير كلمة مرور المسؤول بنجاح');
+      setCurrentPassword('');
+      setNewPassword('');
+    } catch (err: any) {
+      toast.error(err.message || 'حدث خطأ أثناء تغيير كلمة المرور');
+    } finally {
+      setIsChangingPass(false);
     }
   };
 
@@ -137,7 +145,7 @@ export const SettingsPage: React.FC = () => {
     <div className="space-y-6 max-w-4xl mx-auto">
       <PageHeader
         title="إعدادات الكنيسة والتطبيق"
-        description="إدارة مظهر النظام، آية الأسبوع في تطبيق الموبايل، الهوية الرسمية للكنيسة، وروابط التواصل"
+        description="إدارة مظهر النظام، الهوية الرسمية للكنيسة، روابط التواصل، وأمان حساب الإدارة"
       />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -194,22 +202,18 @@ export const SettingsPage: React.FC = () => {
                     <span
                       className="h-4 w-4 rounded-full border border-black/10 shadow-xs"
                       style={{ backgroundColor: '#7A182B' }}
-                      title="عنابي كنسي #7A182B"
                     />
                     <span
                       className="h-4 w-4 rounded-full border border-black/10 shadow-xs"
                       style={{ backgroundColor: '#FCC260' }}
-                      title="ذهبي الكنيسة #FCC260"
                     />
                     <span
                       className="h-4 w-4 rounded-full border border-black/10 shadow-xs"
                       style={{ backgroundColor: '#FFF8F6' }}
-                      title="خلفية كريمية #FFF8F6"
                     />
                     <span
                       className="h-4 w-4 rounded-full border border-black/10 shadow-xs"
                       style={{ backgroundColor: '#36825C' }}
-                      title="أخضر الحضور #36825C"
                     />
                   </div>
                 </div>
@@ -311,10 +315,10 @@ export const SettingsPage: React.FC = () => {
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
               <Church className="h-5 w-5 text-[#695CFF]" />
-              الهوية الرسمية وآية الأسبوع في تطبيق الموبايل
+              الهوية الرسمية وآية الأسبوع
             </CardTitle>
             <CardDescription className="text-xs">
-              تظهر هذه البيانات وآية الأسبوع مباشرة في الصفحة الرئيسية لتطبيق الهاتف لدى جميع الطلاب
+              بيانات الكنيسة وآية الأسبوع المعروضة للمخدومين
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -332,7 +336,7 @@ export const SettingsPage: React.FC = () => {
             <div>
               <label className="block text-xs font-medium text-[#A5A8B5] mb-1 flex items-center gap-1.5">
                 <BookOpen className="h-3.5 w-3.5 text-[#DDAA48]" />
-                <span>آية الأسبوع (تظهر تحت اسم الطالب في الرئيسية بتطبيق الموبايل)</span>
+                <span>آية الأسبوع</span>
               </label>
               <Textarea
                 rows={2}
@@ -380,7 +384,7 @@ export const SettingsPage: React.FC = () => {
               روابط التواصل الاجتماعي ومجموعات الواتساب
             </CardTitle>
             <CardDescription className="text-xs">
-              روابط مخصصة تظهر في الصفحة الرئيسية لتطبيق الهاتف وفق جنس المخدوم (ذكور / إناث)
+              روابط التواصل الرسمية الخاصة بالخدمة
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -477,49 +481,50 @@ export const SettingsPage: React.FC = () => {
         </Card>
       </form>
 
-      <Card className="border-[#DDAA48]/30 bg-[#DDAA48]/5">
+      <Card className="hover:border-[#454958] transition-colors">
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2 text-[#DDAA48]">
-            <Sparkles className="h-5 w-5" />
-            إدارة التخزين المحلي الاحتياطي
+          <CardTitle className="text-base flex items-center gap-2">
+            <Lock className="h-5 w-5 text-[#DDAA48]" />
+            أمان حساب المسؤول (تغيير كلمة المرور)
           </CardTitle>
           <CardDescription className="text-xs">
-            إعادة ضبط ذاكرة التخزين المحلي الاحتياطية في المتصفح عند الحاجة
+            تحديث كلمة مرور الدخول إلى لوحة التحكم الخاصة بالمسؤول
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#17191F] border border-[#30333E]">
-            <div className="space-y-1">
-              <span className="text-xs font-bold text-[#F1F2F7]">
-                إعادة ضبط الذاكرة المحلية
-              </span>
-              <p className="text-[11px] text-[#A5A8B5]">
-                استعادة الإعدادات الافتراضية المحلية للمتصفح
-              </p>
+          <form onSubmit={handleChangeAdminPassword} className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+            <div>
+              <label className="block text-xs font-medium text-[#A5A8B5] mb-1">
+                كلمة المرور الحالية
+              </label>
+              <Input
+                type="password"
+                placeholder="••••••••"
+                dir="ltr"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+              />
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setResetConfirmOpen(true)}
-              className="text-[#DDAA48] border-[#DDAA48]/40 hover:bg-[#DDAA48]/10 gap-1.5 shrink-0"
-            >
-              <RotateCcw className="h-3.5 w-3.5" />
-              <span>إعادة تعيين البيانات المحلية</span>
-            </Button>
-          </div>
+            <div>
+              <label className="block text-xs font-medium text-[#A5A8B5] mb-1">
+                كلمة المرور الجديدة
+              </label>
+              <Input
+                type="password"
+                placeholder="••••••••"
+                dir="ltr"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </div>
+            <div>
+              <Button type="submit" variant="secondary" isLoading={isChangingPass} className="w-full">
+                تحديث كلمة المرور
+              </Button>
+            </div>
+          </form>
         </CardContent>
       </Card>
-
-      <ConfirmDialog
-        open={resetConfirmOpen}
-        onOpenChange={setResetConfirmOpen}
-        title="تأكيد إعادة التعيين"
-        description="سيتم إعادة ضبط الذاكرة المحلية للمتصفح وتحديث الصفحة. هل ترغب بالاستمرار؟"
-        confirmText="نعم، إعادة التعيين"
-        cancelText="إلغاء"
-        variant="amber"
-        onConfirm={handleResetAllData}
-      />
     </div>
   );
 };

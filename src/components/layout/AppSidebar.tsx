@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
@@ -11,10 +11,12 @@ import {
   ChevronRight,
   ChevronLeft,
   ShieldCheck,
-  Smartphone,
+  LogOut,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { APP_NAME, APP_SUBTITLE } from '../../lib/constants';
+import { authService } from '../../features/auth/services/authService';
+import { toast } from 'sonner';
 
 interface AppSidebarProps {
   collapsed: boolean;
@@ -30,51 +32,47 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
   onItemClick,
 }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const session = authService.getSession();
 
   const navItems = [
     {
       to: '/dashboard',
       label: 'لوحة التحكم',
       icon: LayoutDashboard,
-      badge: undefined,
     },
     {
       to: '/members',
-      label: 'الأعضاء والطلاب',
+      label: 'الأعضاء',
       icon: Users,
-      badge: 'مباشر',
     },
     {
       to: '/attendance-days',
       label: 'جلسات الحضور',
       icon: CalendarCheck,
-      badge: 'مفتوح',
-    },
-    {
-      to: '/mobile-app',
-      label: 'تطبيق الموبايل',
-      icon: Smartphone,
-      badge: 'جديد',
     },
     {
       to: '/events',
       label: 'الفعاليات',
       icon: Sparkles,
-      badge: undefined,
     },
     {
       to: '/reports',
       label: 'التقارير',
       icon: BarChart3,
-      badge: undefined,
     },
     {
       to: '/settings',
       label: 'الإعدادات',
       icon: Settings,
-      badge: undefined,
     },
   ];
+
+  const handleLogout = () => {
+    authService.logout();
+    toast.success('تم تسجيل الخروج بنجاح');
+    navigate('/login', { replace: true });
+  };
 
   return (
     <aside
@@ -112,15 +110,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
           </button>
         </div>
 
-        {!collapsed && (
-          <div className="mx-4 mt-4 p-2.5 rounded-xl bg-[#27CFA5]/10 border border-[#27CFA5]/25 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1.5 text-[#27CFA5] font-medium">
-              <span className="h-2 w-2 rounded-full bg-[#27CFA5] animate-pulse" />
-              <span>متصل بـ Supabase Cloud</span>
-            </div>
-          </div>
-        )}
-
         <nav className="mt-4 px-3 space-y-1.5">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -147,30 +136,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                     isActive ? 'text-white' : 'text-[#A5A8B5] group-hover:text-[#F1F2F7]'
                   )}
                 />
-                {!collapsed && (
-                  <div className="flex flex-1 items-center justify-between">
-                    <span className="truncate">{item.label}</span>
-                    {item.badge && !isActive && (
-                      <span
-                        className={cn(
-                          'text-[10px] px-2 py-0.5 rounded-full font-medium',
-                          item.badge === 'مفتوح' || item.badge === 'مباشر'
-                            ? 'bg-[#27CFA5]/15 text-[#27CFA5] border border-[#27CFA5]/30'
-                            : 'bg-[#DDAA48]/15 text-[#DDAA48] border border-[#DDAA48]/30'
-                        )}
-                      >
-                        {item.badge}
-                      </span>
-                    )}
-                  </div>
-                )}
+                {!collapsed && <span className="truncate">{item.label}</span>}
               </NavLink>
             );
           })}
         </nav>
       </div>
 
-      <div className="p-3 border-t border-[#30333E]/60">
+      <div className="p-3 border-t border-[#30333E]/60 space-y-2">
         <div
           className={cn(
             'flex items-center gap-3 rounded-xl bg-[#20232B] p-2.5 border border-[#30333E]',
@@ -188,12 +161,23 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
             <div className="flex flex-col truncate flex-1">
               <div className="flex items-center gap-1">
                 <span className="text-xs font-semibold text-[#F1F2F7] truncate">
-                  أبونا / المشرف العام
+                  {session?.admin.name || 'مدير النظام'}
                 </span>
                 <ShieldCheck className="h-3.5 w-3.5 text-[#695CFF]" />
               </div>
-              <span className="text-[11px] text-[#A5A8B5]">مدير النظام (Admin)</span>
+              <span className="text-[11px] text-[#A5A8B5]">مسؤول النظام</span>
             </div>
+          )}
+
+          {!collapsed && (
+            <button
+              type="button"
+              onClick={handleLogout}
+              title="تسجيل الخروج"
+              className="p-1.5 rounded-lg text-[#E85D75] hover:bg-[#E85D75]/10 transition-colors cursor-pointer"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
           )}
         </div>
       </div>

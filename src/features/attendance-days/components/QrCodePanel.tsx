@@ -10,7 +10,6 @@ import {
   RefreshCw,
   Play,
   Square,
-  Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -112,7 +111,7 @@ export const QrCodePanel: React.FC<QrCodePanelProps> = ({ day, onRefresh }) => {
             <div class="meta">
               <p>التاريخ: ${day.date}</p>
               <p>المكان: ${day.location}</p>
-              <p>امسح الرمز عبر تطبيق الهاتف لتسجيل حضورك في الاجتماع (+${day.pointsReward || 10} نقطة)</p>
+              <p>امسح الرمز عبر تطبيق الهاتف لتسجيل حضورك في الاجتماع</p>
             </div>
             <img src="${pngUrl}" alt="QR Code" />
             <div class="footer">
@@ -152,7 +151,7 @@ export const QrCodePanel: React.FC<QrCodePanelProps> = ({ day, onRefresh }) => {
         toast.success('تم إغلاق استقبال التسجيل');
       } else {
         await attendanceDaysService.openAttendanceDay(day.id);
-        toast.success('تم فتح استقبال تسجيل الحضور وتحديث الرمز وإشعار الطلاب');
+        toast.success('تم فتح استقبال تسجيل الحضور وتحديث الرمز');
       }
       onRefresh();
     } catch (err: any) {
@@ -184,7 +183,7 @@ export const QrCodePanel: React.FC<QrCodePanelProps> = ({ day, onRefresh }) => {
           </div>
         </div>
         <CardDescription className="text-xs">
-          اعرض هذا الرمز على شاشة العرض بالقاعة أو قم بطباعته لمسحه بواسطة تطبيق المخدومين
+          اعرض هذا الرمز على شاشة العرض بالقاعة أو قم بطباعته لمسحه بواسطة المخدومين
         </CardDescription>
       </CardHeader>
 
@@ -214,18 +213,11 @@ export const QrCodePanel: React.FC<QrCodePanelProps> = ({ day, onRefresh }) => {
 
           <div className="mt-4 text-center space-y-1">
             <span className="text-[10px] text-[#A5A8B5] font-mono">
-              معرّف الجلسة الرمزي ({day.sessionCode || '#405'} — +{day.pointsReward ?? 10} نقطة):
+              معرّف الجلسة الرمزي:
             </span>
             <p className="text-xs font-mono font-semibold text-[#9D94FF] bg-[#20232B] px-3 py-1 rounded-lg border border-[#30333E] max-w-sm truncate" dir="ltr">
               {day.qrToken}
             </p>
-          </div>
-
-          <div className="mt-4 flex items-center gap-2 p-3 rounded-xl bg-[#695CFF]/10 border border-[#695CFF]/25 text-[11px] text-[#9D94FF] max-w-md">
-            <Sparkles className="h-4 w-4 shrink-0 text-[#DDAA48]" />
-            <span>
-              <strong>متصل بتطبيق الموبايل:</strong> عند مسح هذا الرمز من تطبيق Angel Gabriel يتم التحقق من الصلاحية وتسجيل الحضور ومنح النقاط فورياً.
-            </span>
           </div>
         </div>
 

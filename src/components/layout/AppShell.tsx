@@ -3,10 +3,13 @@ import { Outlet } from 'react-router-dom';
 import { AppSidebar } from './AppSidebar';
 import { AppHeader } from './AppHeader';
 import { MobileNavigation } from './MobileNavigation';
+import { useRealtimeSync } from '../../lib/useRealtimeSync';
 
 export const AppShell: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useRealtimeSync();
 
   return (
     <div className="flex min-h-screen bg-[#101116] text-[#F1F2F7]">
